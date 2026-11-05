@@ -1,0 +1,15 @@
+Round 20 check, 2026-11-05 11:04, the exe, 1280 x 720, muted.
+
+=== D1: the bike held on its tail (rotation and position frozen, as wedged against a wall) in a race: the prompt and the reset by itself, normal and HIGH
+  normal: prompt at 5.0 s, reset at 8.0 s; after: (1509.8, 410.0, -6511.4) tilted 2 deg, lap station 1841 m (checkpoint 3 at 1901 m), next checkpoint 3
+PASS  D1 normal: the wedged bike is offered a reset at about 5 s and reset by itself at about 8 s, upright, short of the next checkpoint  -  prompt 5.0, reset 8.0
+  HIGH: righted by HIGH at 1.0 s, prompt at 6.7 s, reset at 6.7 s; after: (1509.8, 410.0, -6511.4) tilted 2 deg, lap station 1841 m (checkpoint 3 at 1901 m), next checkpoint 3
+PASS  D1 HIGH: the wedged bike is righted at once, then (still pinned, throttle on) reset by itself about 5 s later, upright, short of the next checkpoint  -  righted 1.0, prompt 6.7, reset 6.7
+
+=== D2: the reset button pressed 25 m before each checkpoint and before the line (that checkpoint next), and in the quarry's lake: nothing forgiven it did not pass, no lap moved
+  Viking Quarry: in the lake at (-1980, -1488) after CP2: put back at lap 1028 m; next 3, forgiven none
+  Viking Quarry: in the lake at (-2124, -1599) after CP2: put back at lap 1028 m; next 3, forgiven none
+  Viking Quarry: 22 checkpoints and the line reset before: every one kept as next, nothing forgiven, no lap moved
+PASS  D2 Viking Quarry: no reset forgives a checkpoint it did not pass or moves a lap  -  0 wrong
+
+3 of 3 checks passed.

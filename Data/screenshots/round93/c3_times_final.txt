@@ -1,0 +1,63 @@
+Round 92 check, 2026-11-05 14:10, the exe, 1280 x 720, muted.
+
+=== F. Wings & Wheels as a car: the human-like driver (the Street Classic), solo, 2 laps: lap 1 by the roads, lap 2 through THE TUBE
+  laps 2:44.286 / 2:00.312; shortcuts lap 2 f_tube; missed 0; express rides 0; resets 3, stuck 3, top 44 m/s
+  the car at the end (1810.5, 368.3, -8118.9), in a pipe False stuck at (1349, -6465) s 7008 (tilted 8 deg, 4 wheels down, against BusinessBodies_10_-51; stuck_1.png): reset; stuck at (1349, -6472) s 7012 (tilted 21 deg, 3 wheels down, against BusinessBodies_10_-51; stuck_2.png): reset; stuck at (1485, -6597) s 7207 (tilted 88 deg, 0 wheels down, against Kennestone buildings; stuck_3.png): reset;
+  trace: 0:0.0d60 26:33.8 51:36.2 76:37.8 101:39.0 127:40.3 152:41.5 177:41.8 202:42.7 228:43.4 253:44.0 278:43.7 303:43.6 329:42.2 354:40.8 380:39.3 405:38.2 431:36.9 456:35.2 481:35.1 506:34.5 531:33.9 557:34.2d4 582:32.8 607:32.6 632:32.2 658:31.3d4 683:25.6d4 708:24.9 733:28.0 759:29.6 784:30.8 809:31.4 835:31.9 860:32.4 885:32.7 911:33.4 937:33.6 962:33.6 987:33.8 1012:33.9 1038:33.8 1063:33.9 1089:34.1 1114:34.4 1139:34.5 1165:34.8 1190:35.1 1216:35.2 1242:35.1 1267:34.8 1292:34.4d3 1318:33.9 1343:33.3d3 1369:33.7 1394:35.5 1420:36.7 1445:38.1 1471:39.3 1496:38.9 1522:39.0 1548:38.5 1573:37.4 1598:35.3 1623:34.3 1648:32.5 1674:29.4d3 1699:17.5 1724:21.5 1750:25.6 1775:27.7 1800:28.7 1825:29.0 1851:28.8d6 1877:29.8 1903:31.8 1928:32.6 1953:32.9 1979:33.4 2004:33.8 2029:34.3 2054:34.8 2080:35.1 2105:35.3 2130:25.9 2155:10.4 2180:17.6 2206:24.3 2231:27.4 2256:28.4 2281:29.5 2307:30.6 2332:31.0 2358:31.1 2383:31.2 2408:31.8 2433:32.4 2459:32.8 2484:32.3 2510:31.6 2535:32.3 2560:33.5d3 2585:14.8 2610:15.5 2635:23.4 2661:26.6 2686:27.4d6 2711:28.2 2736:30.4 2762:31.0 2787:32.1 2813:32.1 2838:32.4 2864:32.8 2889:33.0 2914:32.8 2939:34.0d3 2965:32.7 2990:32.8 3016:33.0 3041:32.3 3066:25.7d8 3091:25.9 3116:27.0 3142:29.0 3167:29.1d5 3192:28.7 3217:29.7d5 3243:29.7 3268:30.7 3293:30.9d7 3319:26.3 3344:27.1d5 3369:24.5 3394:25.1d4 3419:24.2 3445:26.7 3470:29.5 3495:29.5d5 3520:29.0 3546:30.3 3571:30.5d7 3596:27.4 3622:21.7 3647:26.0 3672:26.8d8 3697:27.3 3723:29.0 3748:30.8 3773:24.4 3799:28.1 3824:29.6 3849:28.3 3875:22.7 3900:25.2 3925:28.1 3951:30.1 3976:30.8 4002:30.8d3 4027:30.8 4052:31.4 4078:31.8 4103:32.1 4128:32.3 4154:32.1 4179:32.5 4204:32.8 4229:32.9d3 4254:32.7 4280:33.2 4305:33.0 4330:33.6 4355:33.7 4380:30.7 4405:10.3 4430:18.1 4456:24.4 4481:27.6 4506:13.0 4531:12.2 4556:22.0 4581:26.2 4606:29.1 4632:31.0 4657:31.6 4682:32.1 4707:32.5 4733:32.5 4758:32.1 4783:32.0 4809:32.5 4834:32.8 4860:33.1 4885:33.6 4911:33.8 4936:34.4 4961:35.1 4986:35.2 5012:34.9 5038:34.5 5063:33.4d4 5088:32.6 5114:32.4 5139:32.2 5164:31.6 5189:31.5 5214:30.6d4 5240:30.9 5265:32.0 5290:31.4 5315:30.1 5341:30.6 5366:30.3d4 5391:29.0 5417:29.9 5443:30.3 5468:30.8 5493:31.5 5518:31.4 5544:32.4 5569:32.6 5594:31.6d4 5619:28.4d4 5644:28.3 5669:29.2 5694:28.9 5719:28.9 5745:30.7 5770:31.9 5795:30.5 5820:30.8 5846:32.2 5872:33.0 5897:33.1 5922:33.2 5947:31.9d4 5972:27.6 5998:27.3 6023:28.8 6048:30.7d3 6073:24.0 6099:26.6 6124:27.5 6149:27.3 6174:29.1 6199:28.5 6225:29.4 6250:29.7 6276:29.9 6301:29.8 6327:29.7 6352:28.6 6377:30.1 6402:29.9 6427:14.2 6453:21.5 6478:24.5 6503:27.4 6528:24.7 6554:27.6 6579:29.2 6604:29.8 6630:29.7 6655:30.4 6681:30.8 6706:31.0 6731:31.3 6756:30.1 6781:22.0 6806:25.2 6831:29.2 6857:16.6 6882:9.0 6907:10.3 6932:21.4 6957:22.8 6982:13.7a 7007:2.2 7033:15.9 7058:15.3ad4 7083:21.5 7108:25.0d3 7133:19.3a 7164:10.3d8 7189:18.8d7
+PASS  F car: the human-like driver finishes both laps  -  laps 2
+FAIL  F car: lap 2 takes THE TUBE (the express carries it) with no checkpoint missed  -  shortcuts 1, rides 0, missed 0
+
+=== F. Wings & Wheels as a plane: the human-like pilot (the Sky Hopper), solo, 2 laps
+  laps 2:09.152 / 2:09.253; missed 0 (); low frames 6, 11, slow rings ; too fast at a slow ring 0 times; crashes 0;
+PASS  F plane: the human-like pilot finishes both laps  -  laps 2
+PASS  F plane: every low frame and slow ring taken (none missed)  -  missed 0
+
+=== F. Wings & Wheels, the AI fields (2 laps, 3 AI; the player parked off the course): all cars, all planes, mixed
+  Easy, all cars: EMBER Street Classic (car) 4:55.747, laps 2:35.152 / 2:20.595, missed 0, shortcuts 0; GOLD Drifter Twin (car) 5:06.037, laps 2:48.459 / 2:17.578, missed 0, shortcuts 1; BLUE Skyfin Cruiser (car) 4:43.439, laps 2:25.153 / 2:18.286, missed 0, shortcuts 0
+PASS  F AI Easy all cars: every AI finishes
+  Easy, all planes: EMBER Sky Dart (plane) 4:33.572, laps 2:10.045 / 2:23.527, missed 4, shortcuts 0; GOLD Sky Dart (plane) 4:16.955, laps 2:05.406 / 2:11.550, missed 1, shortcuts 0; BLUE Sky Dart (plane) 4:26.031, laps 2:12.965 / 2:13.066, missed 2, shortcuts 0
+PASS  F AI Easy all planes: every AI finishes
+  Easy, mixed: EMBER Street Classic (car) 4:41.325, laps 2:20.651 / 2:20.674, missed 0, shortcuts 0; BLUE Drifter Twin (car) 3:58.917, laps 1:59.811 / 1:59.107, missed 0, shortcuts 0; GOLD Sky Dart (plane) 4:18.370, laps 2:09.884 / 2:08.485, missed 1, shortcuts 0
+PASS  F AI Easy mixed: every AI finishes
+  Normal, all cars: EMBER Street Classic (car) 4:24.078, laps 2:13.713 / 2:10.365, missed 0, shortcuts 0; GOLD Drifter Twin (car) 4:43.194, laps 1:58.804 / 2:44.391, missed 0, shortcuts 1; BLUE Skyfin Cruiser (car) 5:13.171, laps 2:17.927 / 2:55.244, missed 0, shortcuts 1
+PASS  F AI Normal all cars: every AI finishes
+  Normal, all planes: EMBER Sky Dart (plane) 4:06.669, laps 2:04.077 / 2:02.592, missed 0, shortcuts 0; GOLD Sky Dart (plane) 4:12.152, laps 2:04.042 / 2:08.110, missed 1, shortcuts 0; BLUE Sky Dart (plane) 4:16.287, laps 2:10.477 / 2:05.810, missed 1, shortcuts 0
+PASS  F AI Normal all planes: every AI finishes
+  Normal, mixed: EMBER Street Classic (car) 5:03.925, laps 2:11.149 / 2:52.776, missed 0, shortcuts 1; BLUE Drifter Twin (car) 3:52.488, laps 1:53.406 / 1:59.082, missed 0, shortcuts 0; GOLD Sky Hopper (plane) 4:37.460, laps 2:17.752 / 2:19.708, missed 2, shortcuts 0
+PASS  F AI Normal mixed: every AI finishes
+  Hard, all cars: EMBER Street Classic (car) 4:22.900, laps 2:07.460 / 2:15.439, missed 0, shortcuts 0; GOLD Drifter Twin (car) 4:02.361, laps 2:12.735 / 1:49.626, missed 0, shortcuts 1; BLUE Skyfin Cruiser (car) 4:36.577, laps 2:15.217 / 2:21.360, missed 0, shortcuts 2
+PASS  F AI Hard all cars: every AI finishes
+  Hard, all planes: EMBER Sky Hopper (plane) NOT finished, laps , missed 0, shortcuts 0; GOLD Sky Dart (plane) 4:02.454, laps 2:01.205 / 2:01.248, missed 0, shortcuts 0; BLUE Sky Hopper (plane) 4:33.553, laps 2:11.777 / 2:21.777, missed 2, shortcuts 0
+FAIL  F AI Hard all planes: every AI finishes  -  EMBER
+  Hard, mixed: EMBER Street Classic (car) 4:37.615, laps 2:16.322 / 2:21.293, missed 0, shortcuts 1; BLUE Drifter Twin (car) 4:44.728, laps 2:44.380 / 2:00.348, missed 0, shortcuts 1; GOLD Sky Dart (plane) 4:05.239, laps 2:02.860 / 2:02.379, missed 0, shortcuts 0
+PASS  F AI Hard mixed: every AI finishes
+  lap times by kind:
+    Easy	car	Street Classic	best lap 2:20.595	average 2:27.874
+    Easy	car	Drifter Twin	best lap 2:17.578	average 2:33.019	(tube 1)
+    Easy	car	Skyfin Cruiser	best lap 2:18.286	average 2:21.719
+    Easy	plane	Sky Dart	best lap 2:10.045	average 2:16.786
+    Easy	plane	Sky Dart	best lap 2:05.406	average 2:08.478
+    Easy	plane	Sky Dart	best lap 2:12.965	average 2:13.016
+    Easy	car	Street Classic	best lap 2:20.651	average 2:20.663
+    Easy	car	Drifter Twin	best lap 1:59.107	average 1:59.459
+    Easy	plane	Sky Dart	best lap 2:08.485	average 2:09.185
+    Normal	car	Street Classic	best lap 2:10.365	average 2:12.039
+    Normal	car	Drifter Twin	best lap 1:58.804	average 2:21.597	(tube 1)
+    Normal	car	Skyfin Cruiser	best lap 2:17.927	average 2:36.585	(tube 1)
+    Normal	plane	Sky Dart	best lap 2:02.592	average 2:03.334
+    Normal	plane	Sky Dart	best lap 2:04.042	average 2:06.076
+    Normal	plane	Sky Dart	best lap 2:05.810	average 2:08.144
+    Normal	car	Street Classic	best lap 2:11.149	average 2:31.962	(tube 1)
+    Normal	car	Drifter Twin	best lap 1:53.406	average 1:56.244
+    Normal	plane	Sky Hopper	best lap 2:17.752	average 2:18.730
+    Hard	car	Street Classic	best lap 2:07.460	average 2:11.450
+    Hard	car	Drifter Twin	best lap 1:49.626	average 2:01.180	(tube 1)
+    Hard	car	Skyfin Cruiser	best lap 2:15.217	average 2:18.288	(tube 2)
+    Hard	plane	Sky Dart	best lap 2:01.205	average 2:01.227
+    Hard	plane	Sky Hopper	best lap 2:11.777	average 2:16.777
+    Hard	car	Street Classic	best lap 2:16.322	average 2:18.807	(tube 1)
+    Hard	car	Drifter Twin	best lap 2:00.348	average 2:22.364	(tube 1)
+    Hard	plane	Sky Dart	best lap 2:02.379	average 2:02.619
+  the human-like player: car by the roads 2:44.286, car through the tube 2:00.312, plane 2:09.152: the plane +7 % against the car's tube lap
+
+11 of 13 checks passed.

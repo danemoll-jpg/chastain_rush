@@ -1,0 +1,277 @@
+Round 20 check, 2026-11-05 11:07, the exe, 1280 x 720, muted.
+
+=== A: Dan's spot on the Viking Quarry race (after The Big One's run-out; his photo: CHECKPOINT 5 340 m ahead)
+  lap 1800 m at (-2087.6, -1290.4), heading 2: pictures 93_dan_1800_chase / _seat
+  lap 1820 m at (-2088.8, -1270.5), heading -13: pictures 93_dan_1820_chase / _seat
+  lap 1840 m at (-2099.3, -1253.9), heading -50: pictures 93_dan_1840_chase / _seat
+  lap 1880 m at (-2136.5, -1243.0), heading -98: pictures 93_dan_1880_chase / _seat
+
+=== C2: Wings & Wheels' U-turn (Tower Road's west end round by North Avenue)
+  CP4 'The U-turn' at lap 2129 m; the driver's lap 2:39.018, missed 0, resets 0, stuck 0; pictures 93_uturn_*
+PASS  C2: the human-like driver takes the U-turn without missing its checkpoint  -  missed 0
+
+=== A / C1: the bump log, the human-like driver solo, 3 laps, Needle 600, Street Classic, normal and high: hops over 0.3 s (designed jumps apart) and hard jolts
+  viking_quarry normal Needle 600: finished, laps 6:01.452 / 5:35.408 / 5:35.863, resets 6, lake 0, stuck 6 stuck at (-1964, -1484) s 7310 (tilted 123 deg, 0 wheels down; stuck_1.png): reset; stuck at (-2005, -1864) s 6930 (tilted 2 deg, 4 wheels down; stuck_2.png): reset; stuck at (-1996, -1501) s 16094 (tilted 3 deg, 4 wheels down; stuck_3.png): reset; stuck at (-1996, -1866) s 15729 (tilted 2 deg, 4 wheels down; stuck_4.png): reset; stuck at (-1955, -1448) s 24949 (tilted 124 deg, 0 wheels down; stuck_5.png): reset; stuck at (-2003, -1864) s 24533 (tilted 2 deg, 4 wheels down; stuck_6.png): reset;
+    lap 1 hop at lap 1362 m (-2198.9, 323.8, -1714.0) 6.00 s off the ground at 42 m/s (designed: J3 The Big One)
+    lap 1 jolt at lap 1591 m (-2111.7, 203.8, -1500.6) 35.6 m/s within 0.1 s at 49 m/s
+    lap 1 hop at lap 1599 m (-2108.3, 202.0, -1493.0) 0.38 s off the ground at 46 m/s
+    lap 1 jolt at lap 1659 m (-2091.6, 186.7, -1434.5) 3.7 m/s within 0.1 s at 39 m/s
+    lap 1 hop at lap 4644 m (-1721.0, 318.8, -1589.8) 6.26 s off the ground at 40 m/s (designed: J1 The Corner)
+    lap 1 jolt at lap 4861 m (-1743.5, 222.2, -1371.1) 35.3 m/s within 0.1 s at 52 m/s
+    lap 1 hop at lap 4863 m (-1743.8, 221.9, -1369.0) 0.66 s off the ground at 52 m/s
+    lap 1 jolt at lap 4901 m (-1749.1, 214.8, -1331.1) 8.2 m/s within 0.1 s at 48 m/s
+    lap 1 hop at lap 4912 m (-1753.8, 218.6, -1321.6) 1.34 s off the ground at 39 m/s
+    lap 1 jolt at lap 4961 m (-1777.3, 223.7, -1277.0) 4.8 m/s within 0.1 s at 34 m/s
+    lap 1 hop at lap 4988 m (-1798.5, 228.0, -1252.8) 0.52 s off the ground at 34 m/s
+    lap 1 jolt at lap 5004 m (-1817.4, 227.8, -1244.1) 3.8 m/s within 0.1 s at 32 m/s
+    lap 1 hop at lap 6796 m (-1998.2, 308.5, -1998.6) 0.32 s off the ground at 33 m/s
+    lap 1 hop at lap 7146 m (-1999.4, 324.9, -1648.0) 6.58 s off the ground at 41 m/s (designed: J2 The Long One)
+    lap 1 jolt at lap 7364 m (-2038.1, 195.6, -1430.2) 8.3 m/s within 0.1 s at 32 m/s
+    lap 1 hop at lap 7361 m (-2034.4, 190.9, -1433.0) 4.08 s off the ground at 24 m/s
+    lap 1 hop at lap 7146 m (-2000.0, 325.0, -1647.8) 6.34 s off the ground at 46 m/s (designed: J2 The Long One)
+    lap 1 jolt at lap 7409 m (-1999.5, 215.3, -1385.1) 26.0 m/s within 0.1 s at 49 m/s (designed: J2 The Long One)
+    lap 2 hop at lap 1361 m (-2200.7, 323.7, -1714.2) 6.02 s off the ground at 42 m/s (designed: J3 The Big One)
+    lap 2 jolt at lap 1593 m (-2163.6, 203.2, -1484.1) 32.9 m/s within 0.1 s at 53 m/s
+    lap 2 jolt at lap 1660 m (-2151.9, 186.7, -1417.8) 8.4 m/s within 0.1 s at 41 m/s
+    lap 2 hop at lap 4645 m (-1721.3, 319.0, -1589.5) 6.38 s off the ground at 41 m/s (designed: J1 The Corner)
+    lap 2 jolt at lap 4893 m (-1816.1, 214.1, -1358.0) 3.1 m/s within 0.1 s at 49 m/s
+    lap 2 hop at lap 4911 m (-1826.1, 221.1, -1341.6) 1.26 s off the ground at 13 m/s
+    lap 2 jolt at lap 4926 m (-1828.2, 218.8, -1326.4) 9.5 m/s within 0.1 s at 14 m/s
+    lap 2 hop at lap 7146 m (-1998.4, 324.8, -1648.3) 6.72 s off the ground at 41 m/s (designed: J2 The Long One)
+    lap 2 jolt at lap 7364 m (-2026.6, 187.2, -1429.9) 16.3 m/s within 0.1 s at 44 m/s
+    lap 2 hop at lap 7358 m (-2024.1, 181.0, -1435.9) 3.02 s off the ground at 24 m/s
+    lap 2 jolt at lap 7299 m (-1997.1, 113.7, -1495.7) 18.3 m/s within 0.1 s at 22 m/s (designed: J2 The Long One)
+    lap 2 hop at lap 7146 m (-2000.0, 324.9, -1648.1) 6.30 s off the ground at 45 m/s (designed: J2 The Long One)
+    lap 2 jolt at lap 7404 m (-1999.4, 216.4, -1390.0) 30.7 m/s within 0.1 s at 48 m/s (designed: J2 The Long One)
+    lap 3 hop at lap 1361 m (-2198.4, 323.7, -1714.8) 6.00 s off the ground at 42 m/s (designed: J3 The Big One)
+    lap 3 jolt at lap 1590 m (-2158.2, 203.8, -1488.2) 35.5 m/s within 0.1 s at 49 m/s
+    lap 3 hop at lap 1600 m (-2157.0, 201.7, -1478.5) 0.34 s off the ground at 44 m/s
+    lap 3 jolt at lap 1660 m (-2155.8, 186.8, -1417.3) 7.5 m/s within 0.1 s at 37 m/s
+    lap 3 hop at lap 4644 m (-1721.2, 318.8, -1589.9) 6.32 s off the ground at 40 m/s (designed: J1 The Corner)
+    lap 3 jolt at lap 4866 m (-1757.1, 220.8, -1369.6) 32.2 m/s within 0.1 s at 50 m/s
+    lap 3 hop at lap 7146 m (-2003.1, 324.9, -1648.0) 6.20 s off the ground at 39 m/s (designed: J2 The Long One)
+    lap 3 jolt at lap 7362 m (-2045.3, 209.4, -1432.3) 31.7 m/s within 0.1 s at 28 m/s
+    lap 3 hop at lap 7363 m (-2043.0, 207.9, -1431.0) 4.32 s off the ground at 24 m/s
+    lap 3 jolt at lap 7348 m (-1966.7, 128.5, -1446.7) 14.5 m/s within 0.1 s at 24 m/s
+    lap 3 hop at lap 7146 m (-2000.0, 324.8, -1648.4) 6.32 s off the ground at 46 m/s (designed: J2 The Long One)
+    lap 3 jolt at lap 7406 m (-1999.5, 216.1, -1388.7) 30.8 m/s within 0.1 s at 48 m/s (designed: J2 The Long One)
+FAIL  A/C1 viking_quarry normal Needle 600: no unwanted hop over 0.3 s, no hard jolt  -  10 hops, 17 jolts
+  viking_quarry normal Street Classic: finished, laps 5:52.576 / 5:50.089 / 5:39.916, resets 8, lake 5, stuck 8 stuck at (-1764, -1434) s 4806 (tilted 46 deg, 0 wheels down; stuck_7.png): reset; stuck at (-1669, -1782) s 4445 (tilted 0 deg, 4 wheels down; stuck_8.png): reset; stuck at (-1888, -1461) s 7333 (tilted 0 deg, 4 wheels down; stuck_9.png): reset; stuck at (-2001, -1891) s 6903 (tilted 3 deg, 4 wheels down; stuck_10.png): reset; stuck at (-1801, -1439) s 13612 (tilted 27 deg, 4 wheels down; stuck_11.png): reset; stuck at (-1668, -1781) s 13247 (tilted 0 deg, 4 wheels down; stuck_12.png): reset; stuck at (-1910, -1485) s 16111 (tilted 0 deg, 4 wheels down; stuck_13.png): reset; stuck at (-2000, -1902) s 15694 (tilted 4 deg, 4 wheels down; stuck_14.png): reset;
+    lap 1 hop at lap 1362 m (-2202.3, 323.8, -1713.1) 7.34 s off the ground at 34 m/s (designed: J3 The Big One)
+    lap 1 jolt at lap 1572 m (-2176.1, 123.0, -1502.7) 29.4 m/s within 0.1 s at 33 m/s
+    lap 1 hop at lap 1569 m (-2174.2, 120.9, -1505.9) 0.36 s off the ground at 32 m/s
+    lap 1 hop at lap 1362 m (-2206.2, 323.9, -1711.5) 6.14 s off the ground at 44 m/s (designed: J3 The Big One)
+    lap 1 jolt at lap 1610 m (-2142.4, 199.0, -1472.2) 13.6 m/s within 0.1 s at 54 m/s (designed: J3 The Big One)
+    lap 1 jolt at lap 1659 m (-2122.0, 187.1, -1427.0) 17.9 m/s within 0.1 s at 45 m/s (designed: J3 The Big One)
+    lap 1 hop at lap 4644 m (-1718.6, 319.0, -1588.8) 7.20 s off the ground at 28 m/s (designed: J1 The Corner)
+    lap 1 jolt at lap 4819 m (-1770.7, 144.2, -1422.1) 3.6 m/s within 0.1 s at 23 m/s (designed: J1 The Corner)
+    lap 1 hop at lap 4645 m (-1720.3, 319.2, -1588.5) 6.24 s off the ground at 40 m/s (designed: J1 The Corner)
+    lap 1 jolt at lap 4863 m (-1776.4, 221.7, -1378.2) 6.8 m/s within 0.1 s at 51 m/s (designed: J1 The Corner)
+    lap 1 jolt at lap 4897 m (-1785.3, 214.4, -1345.0) 14.8 m/s within 0.1 s at 42 m/s (designed: J1 The Corner)
+    lap 1 hop at lap 7146 m (-2000.4, 325.0, -1647.9) 7.34 s off the ground at 34 m/s (designed: J2 The Long One)
+    lap 1 jolt at lap 7360 m (-1928.6, 127.6, -1434.3) 3.7 m/s within 0.1 s at 25 m/s
+    lap 1 hop at lap 7360 m (-1924.9, 126.8, -1434.3) 0.46 s off the ground at 24 m/s
+    lap 1 hop at lap 7358 m (-1905.8, 120.2, -1436.5) 1.08 s off the ground at 21 m/s
+    lap 1 jolt at lap 7345 m (-1884.2, 113.5, -1448.9) 5.0 m/s within 0.1 s at 18 m/s
+    lap 1 hop at lap 7147 m (-2000.0, 325.1, -1647.4) 6.04 s off the ground at 43 m/s (designed: J2 The Long One)
+    lap 1 jolt at lap 7379 m (-2000.0, 222.4, -1415.6) 7.3 m/s within 0.1 s at 53 m/s (designed: J2 The Long One)
+    lap 1 jolt at lap 7422 m (-2000.0, 212.6, -1372.3) 15.4 m/s within 0.1 s at 45 m/s (designed: J2 The Long One)
+    lap 2 hop at lap 1362 m (-2195.8, 323.9, -1714.6) 7.30 s off the ground at 33 m/s (designed: J3 The Big One)
+    lap 2 jolt at lap 1575 m (-2143.6, 120.1, -1507.9) 20.3 m/s within 0.1 s at 42 m/s (designed: J3 The Big One)
+    lap 2 hop at lap 1362 m (-2192.5, 323.8, -1715.4) 6.14 s off the ground at 44 m/s (designed: J3 The Big One)
+    lap 2 jolt at lap 1610 m (-2127.0, 198.9, -1476.2) 26.9 m/s within 0.1 s at 49 m/s (designed: J3 The Big One)
+    lap 2 jolt at lap 1659 m (-2123.2, 187.1, -1426.7) 17.5 m/s within 0.1 s at 45 m/s (designed: J3 The Big One)
+    lap 2 hop at lap 4645 m (-1719.1, 319.0, -1588.8) 7.58 s off the ground at 35 m/s (designed: J1 The Corner)
+    lap 2 jolt at lap 4822 m (-1760.5, 151.7, -1415.7) 17.3 m/s within 0.1 s at 16 m/s (designed: J1 The Corner)
+    lap 2 jolt at lap 4814 m (-1767.2, 140.7, -1426.5) 4.0 m/s within 0.1 s at 18 m/s (designed: J1 The Corner)
+    lap 2 hop at lap 4813 m (-1772.5, 138.1, -1429.1) 1.12 s off the ground at 16 m/s (designed: J1 The Corner)
+    lap 2 hop at lap 4812 m (-1792.6, 121.6, -1435.3) 0.42 s off the ground at 17 m/s
+    lap 2 jolt at lap 4811 m (-1798.5, 117.1, -1437.5) 3.0 m/s within 0.1 s at 16 m/s
+    lap 2 hop at lap 4645 m (-1720.2, 319.0, -1588.8) 6.40 s off the ground at 41 m/s (designed: J1 The Corner)
+    lap 2 jolt at lap 4875 m (-1779.6, 218.9, -1366.5) 34.4 m/s within 0.1 s at 44 m/s (designed: J1 The Corner)
+    lap 2 jolt at lap 4909 m (-1788.4, 215.7, -1333.3) 3.2 m/s within 0.1 s at 41 m/s (designed: J1 The Corner)
+    lap 2 hop at lap 7147 m (-1999.3, 325.1, -1647.5) 7.10 s off the ground at 35 m/s (designed: J2 The Long One)
+    lap 2 jolt at lap 7364 m (-1987.5, 153.6, -1430.1) 25.0 m/s within 0.1 s at 48 m/s (designed: J2 The Long One)
+    lap 2 hop at lap 7358 m (-1970.9, 142.5, -1436.4) 1.30 s off the ground at 43 m/s
+    lap 2 jolt at lap 7333 m (-1924.7, 113.6, -1461.5) 9.5 m/s within 0.1 s at 43 m/s
+    lap 2 hop at lap 7146 m (-2000.0, 324.9, -1648.0) 5.98 s off the ground at 42 m/s (designed: J2 The Long One)
+    lap 2 jolt at lap 7374 m (-2000.0, 223.8, -1420.5) 34.1 m/s within 0.1 s at 45 m/s (designed: J2 The Long One)
+    lap 2 jolt at lap 7422 m (-2000.1, 212.6, -1372.2) 16.0 m/s within 0.1 s at 44 m/s (designed: J2 The Long One)
+    lap 3 hop at lap 1362 m (-2195.7, 323.9, -1714.5) 7.22 s off the ground at 34 m/s (designed: J3 The Big One)
+    lap 3 jolt at lap 1575 m (-2125.5, 125.7, -1512.6) 26.3 m/s within 0.1 s at 39 m/s
+    lap 3 hop at lap 1362 m (-2206.3, 323.8, -1711.8) 6.12 s off the ground at 44 m/s (designed: J3 The Big One)
+    lap 3 jolt at lap 1609 m (-2143.1, 199.3, -1473.1) 12.4 m/s within 0.1 s at 54 m/s (designed: J3 The Big One)
+    lap 3 jolt at lap 1659 m (-2121.5, 187.1, -1427.0) 17.7 m/s within 0.1 s at 44 m/s (designed: J3 The Big One)
+    lap 3 hop at lap 4645 m (-1720.8, 319.1, -1589.0) 6.66 s off the ground at 34 m/s (designed: J1 The Corner)
+    lap 3 hop at lap 4835 m (-1745.5, 190.5, -1398.6) 0.70 s off the ground at 43 m/s
+    lap 3 jolt at lap 4821 m (-1755.4, 151.9, -1416.2) 3.7 m/s within 0.1 s at 32 m/s (designed: J1 The Corner)
+    lap 3 jolt at lap 4803 m (-1757.2, 133.5, -1435.1) 4.6 m/s within 0.1 s at 30 m/s (designed: J1 The Corner)
+    lap 3 jolt at lap 4784 m (-1756.6, 114.0, -1454.7) 18.1 m/s within 0.1 s at 21 m/s (designed: J1 The Corner)
+    lap 3 hop at lap 4645 m (-1721.4, 319.2, -1588.9) 6.44 s off the ground at 42 m/s (designed: J1 The Corner)
+    lap 3 jolt at lap 4878 m (-1782.0, 217.9, -1364.1) 9.9 m/s within 0.1 s at 50 m/s (designed: J1 The Corner)
+    lap 3 hop at lap 7147 m (-1998.8, 325.0, -1647.7) 7.26 s off the ground at 34 m/s (designed: J2 The Long One)
+    lap 3 hop at lap 7357 m (-1963.3, 141.0, -1437.0) 1.28 s off the ground at 29 m/s
+    lap 3 jolt at lap 7337 m (-1945.7, 114.1, -1456.9) 3.0 m/s within 0.1 s at 22 m/s
+    lap 3 hop at lap 7146 m (-2003.2, 324.9, -1647.9) 6.14 s off the ground at 44 m/s (designed: J2 The Long One)
+    lap 3 jolt at lap 7391 m (-2005.4, 219.4, -1402.8) 11.7 m/s within 0.1 s at 52 m/s (designed: J2 The Long One)
+FAIL  A/C1 viking_quarry normal Street Classic: no unwanted hop over 0.3 s, no hard jolt  -  7 hops, 7 jolts
+  viking_quarry HIGH Needle 600: NOT finished, laps , resets 8, lake 0, stuck 8 stuck at (-1896, -1101) s 5241 (tilted 5 deg, 4 wheels down; stuck_15.png): reset; stuck at (-1994, -2045) s 4020 (tilted 2 deg, 4 wheels down, against Bumper 184; stuck_16.png): reset; stuck at (-1992, -1988) s 3995 (tilted 5 deg, 4 wheels down, against Bumper 185, Bumper 184; stuck_17.png): reset; stuck at (-1992, -1909) s 3917 (tilted 7 deg, 4 wheels down, against Bumper 185, Bumper 186; stuck_18.png): reset; stuck at (-1992, -1826) s 3834 (tilted 0 deg, 4 wheels down, against Bumper 187; stuck_19.png): reset; stuck at (-1992, -1741) s 3748 (tilted 0 deg, 4 wheels down, against Bumper 188; stuck_20.png): reset; stuck at (-1988, -1657) s 3444 (tilted 9 deg, 0 wheels down, against Quarry J2 kicker skirt, sc quarry J2 kicker deck; stuck_21.png): reset; stuck at (-2007, -1878) s 3379 (tilted 2 deg, 4 wheels down, against Bumper 96; stuck_22.png): reset; STUCK: no progress for 120 s at (-2008, -1751) s 1375; the drive ended;
+    lap 1 hop at lap 1361 m (-2200.2, 323.7, -1714.3) 6.04 s off the ground at 41 m/s (designed: J3 The Big One)
+    lap 1 jolt at lap 1588 m (-2190.1, 197.7, -1482.3) 3.2 m/s within 0.1 s at 51 m/s
+    lap 1 hop at lap 1590 m (-2191.9, 192.9, -1479.4) 0.98 s off the ground at 26 m/s
+    lap 1 jolt at lap 1591 m (-2204.2, 167.7, -1475.2) 11.4 m/s within 0.1 s at 23 m/s
+    lap 1 hop at lap 1362 m (-2198.0, 323.8, -1714.5) 5.90 s off the ground at 40 m/s (designed: J3 The Big One)
+    lap 1 jolt at lap 1343 m (-2209.3, 320.8, -1730.7) 3.0 m/s within 0.1 s at 47 m/s
+    lap 1 hop at lap 1361 m (-2204.5, 323.7, -1713.1) 6.32 s off the ground at 47 m/s (designed: J3 The Big One)
+    lap 1 jolt at lap 1632 m (-2133.7, 193.7, -1452.0) 19.2 m/s within 0.1 s at 54 m/s (designed: J3 The Big One)
+    lap 1 jolt at lap 2343 m (-2568.3, 213.0, -1346.3) 3.0 m/s within 0.1 s at 42 m/s
+    lap 1 hop at lap 4645 m (-1720.6, 319.0, -1589.2) 6.34 s off the ground at 40 m/s (designed: J1 The Corner)
+    lap 1 jolt at lap 4867 m (-1752.6, 220.5, -1367.5) 32.5 m/s within 0.1 s at 45 m/s
+    lap 1 jolt at lap 4899 m (-1751.8, 214.2, -1334.3) 5.9 m/s within 0.1 s at 37 m/s
+    lap 1 hop at lap 4914 m (-1754.8, 218.5, -1319.7) 1.20 s off the ground at 35 m/s
+    lap 1 jolt at lap 4953 m (-1769.6, 222.8, -1283.0) 6.0 m/s within 0.1 s at 32 m/s
+    lap 1 hop at lap 6796 m (-2001.8, 308.5, -1998.5) 0.32 s off the ground at 32 m/s
+    lap 1 hop at lap 7146 m (-1999.4, 324.8, -1648.5) 5.94 s off the ground at 42 m/s (designed: J2 The Long One)
+    lap 1 jolt at lap 7367 m (-1967.4, 223.6, -1427.3) 12.0 m/s within 0.1 s at 40 m/s
+    lap 1 hop at lap 7367 m (-1967.3, 222.9, -1426.8) 3.70 s off the ground at 41 m/s
+    lap 1 hop at lap 6788 m (-1991.7, 308.1, -2006.5) 0.34 s off the ground at 17 m/s
+    lap 1 hop at lap 6788 m (-1991.7, 308.1, -2006.7) 0.34 s off the ground at 20 m/s
+    lap 1 jolt at lap 6788 m (-1991.6, 307.8, -2006.2) 3.7 m/s within 0.1 s at 13 m/s
+    lap 1 hop at lap 6791 m (-1991.7, 308.6, -2003.4) 0.66 s off the ground at 14 m/s
+    lap 1 hop at lap 7145 m (-1990.1, 324.5, -1649.4) 11.86 s off the ground at 40 m/s (designed: J2 The Long One)
+FAIL  A/C1 viking_quarry HIGH Needle 600: no unwanted hop over 0.3 s, no hard jolt  -  7 hops, 9 jolts
+  viking_quarry HIGH Street Classic: finished, laps 5:41.515 / 4:48.212 / 4:55.295, resets 2, lake 0, stuck 2 stuck at (-2102, -1589) s 1507 (tilted 180 deg, 0 wheels down; stuck_24.png): reset; stuck at (-2259, -1926) s 1142 (tilted 4 deg, 4 wheels down; stuck_25.png): reset;
+    lap 1 hop at lap 1362 m (-2199.0, 323.8, -1714.2) 7.36 s off the ground at 35 m/s (designed: J3 The Big One)
+    lap 1 hop at lap 1574 m (-2100.6, 120.7, -1521.0) 4.58 s off the ground at 23 m/s
+    lap 1 hop at lap 1362 m (-2199.5, 323.8, -1713.7) 5.98 s off the ground at 42 m/s (designed: J3 The Big One)
+    lap 1 jolt at lap 1592 m (-2140.0, 203.9, -1491.6) 35.9 m/s within 0.1 s at 47 m/s (designed: J3 The Big One)
+    lap 1 jolt at lap 1659 m (-2122.5, 187.1, -1426.4) 18.3 m/s within 0.1 s at 45 m/s (designed: J3 The Big One)
+    lap 1 hop at lap 4645 m (-1719.4, 319.1, -1588.7) 6.66 s off the ground at 35 m/s (designed: J1 The Corner)
+    lap 1 jolt at lap 4830 m (-1733.4, 194.5, -1400.8) 3.2 m/s within 0.1 s at 35 m/s
+    lap 1 hop at lap 4825 m (-1735.9, 187.1, -1406.3) 1.98 s off the ground at 28 m/s
+    lap 1 jolt at lap 4794 m (-1747.1, 125.5, -1441.9) 3.4 m/s within 0.1 s at 36 m/s (designed: J1 The Corner)
+    lap 1 hop at lap 4645 m (-1721.3, 319.1, -1589.1) 6.46 s off the ground at 42 m/s (designed: J1 The Corner)
+    lap 1 jolt at lap 4880 m (-1782.5, 217.3, -1362.1) 23.3 m/s within 0.1 s at 45 m/s (designed: J1 The Corner)
+    lap 1 hop at lap 7147 m (-1992.9, 325.0, -1647.7) 7.56 s off the ground at 37 m/s (designed: J2 The Long One)
+    lap 1 hop at lap 7354 m (-1984.3, 147.3, -1440.5) 0.90 s off the ground at 16 m/s (designed: J2 The Long One)
+    lap 1 jolt at lap 7345 m (-1976.2, 133.6, -1449.5) 3.3 m/s within 0.1 s at 18 m/s
+    lap 1 hop at lap 7147 m (-2006.8, 325.1, -1647.3) 6.18 s off the ground at 44 m/s (designed: J2 The Long One)
+    lap 1 jolt at lap 7393 m (-2007.2, 219.0, -1401.3) 18.0 m/s within 0.1 s at 50 m/s (designed: J2 The Long One)
+    lap 2 hop at lap 1362 m (-2198.9, 323.8, -1714.2) 7.46 s off the ground at 34 m/s (designed: J3 The Big One)
+    lap 2 jolt at lap 1572 m (-2160.4, 119.8, -1506.8) 3.9 m/s within 0.1 s at 43 m/s (designed: J3 The Big One)
+    lap 2 hop at lap 1362 m (-2205.5, 323.9, -1711.6) 6.14 s off the ground at 44 m/s (designed: J3 The Big One)
+    lap 2 jolt at lap 1610 m (-2142.8, 199.1, -1472.1) 11.7 m/s within 0.1 s at 55 m/s (designed: J3 The Big One)
+    lap 2 jolt at lap 1660 m (-2122.1, 187.0, -1426.2) 6.2 m/s within 0.1 s at 46 m/s (designed: J3 The Big One)
+    lap 2 hop at lap 4645 m (-1726.5, 319.2, -1590.1) 6.46 s off the ground at 42 m/s (designed: J1 The Corner)
+    lap 2 jolt at lap 4881 m (-1789.1, 217.1, -1363.0) 16.6 m/s within 0.1 s at 48 m/s (designed: J1 The Corner)
+    lap 2 hop at lap 7147 m (-2007.3, 325.0, -1647.8) 6.20 s off the ground at 45 m/s (designed: J2 The Long One)
+    lap 2 jolt at lap 7397 m (-2007.5, 218.1, -1397.3) 22.8 m/s within 0.1 s at 49 m/s (designed: J2 The Long One)
+    lap 3 hop at lap 1363 m (-2198.8, 323.9, -1713.3) 6.20 s off the ground at 45 m/s (designed: J3 The Big One)
+    lap 3 jolt at lap 1616 m (-2132.9, 197.4, -1468.1) 18.6 m/s within 0.1 s at 52 m/s (designed: J3 The Big One)
+    lap 3 jolt at lap 1660 m (-2121.6, 187.0, -1426.2) 7.9 m/s within 0.1 s at 48 m/s (designed: J3 The Big One)
+    lap 3 hop at lap 4645 m (-1726.8, 319.2, -1590.1) 6.44 s off the ground at 42 m/s (designed: J1 The Corner)
+    lap 3 jolt at lap 4881 m (-1788.9, 217.1, -1363.0) 20.2 m/s within 0.1 s at 47 m/s (designed: J1 The Corner)
+    lap 3 hop at lap 7147 m (-1999.0, 325.1, -1647.4) 6.74 s off the ground at 35 m/s (designed: J2 The Long One)
+    lap 3 hop at lap 7353 m (-2008.4, 166.4, -1441.5) 0.52 s off the ground at 27 m/s (designed: J2 The Long One)
+    lap 3 hop at lap 7352 m (-1996.7, 157.0, -1441.8) 0.32 s off the ground at 29 m/s (designed: J2 The Long One)
+    lap 3 hop at lap 7352 m (-1987.4, 148.4, -1442.3) 0.34 s off the ground at 30 m/s (designed: J2 The Long One)
+    lap 3 jolt at lap 7351 m (-1975.6, 136.9, -1443.0) 4.5 m/s within 0.1 s at 27 m/s
+    lap 3 hop at lap 7146 m (-2003.2, 324.9, -1647.9) 6.16 s off the ground at 44 m/s (designed: J2 The Long One)
+    lap 3 jolt at lap 7392 m (-2005.9, 219.3, -1402.4) 9.7 m/s within 0.1 s at 53 m/s (designed: J2 The Long One)
+FAIL  A/C1 viking_quarry HIGH Street Classic: no unwanted hop over 0.3 s, no hard jolt  -  2 hops, 3 jolts
+  wings_and_wheels normal Needle 600: finished, laps 2:21.557 / 1:59.145 / 2:17.140, resets 3, lake 0, stuck 3 stuck at (1187, -6532) s 2175 (tilted 1 deg, 4 wheels down, against Barrier wall; stuck_26.png): reset; stuck at (1257, -6466) s 6853 (tilted 3 deg, 4 wheels down, against BusinessBodies_9_-51; stuck_27.png): reset; stuck at (1201, -6529) s 11588 (tilted 0 deg, 4 wheels down, against Barrier wall; stuck_28.png): reset;
+    lap 1 jolt at lap 1065 m (1896.0, 381.2, -7062.1) 4.5 m/s within 0.1 s at 37 m/s
+    lap 2 hop at lap 2066 m (1285.1, 399.7, -6499.4) 0.50 s off the ground at 28 m/s
+    lap 2 jolt at lap 2076 m (1275.1, 397.0, -6487.3) 5.1 m/s within 0.1 s at 28 m/s
+    lap 2 hop at lap 2072 m (1278.8, 398.6, -6412.4) 0.74 s off the ground at 17 m/s
+    lap 2 jolt at lap 2060 m (1291.0, 398.5, -6409.2) 3.1 m/s within 0.1 s at 15 m/s
+    lap 2 hop at lap 2054 m (1295.9, 400.5, -6411.0) 0.48 s off the ground at 14 m/s
+    lap 2 hop at lap 2046 m (1304.9, 400.6, -6437.0) 0.36 s off the ground at 18 m/s
+    lap 2 hop at lap 2039 m (1311.8, 400.9, -6441.0) 0.38 s off the ground at 17 m/s (designed: in the tube)
+    lap 2 jolt at lap 2030 m (1321.0, 399.4, -6444.0) 3.7 m/s within 0.1 s at 12 m/s (designed: in the tube)
+    lap 2 jolt at lap 2000 m (1351.6, 398.3, -6466.4) 3.2 m/s within 0.1 s at 27 m/s (designed: in the tube)
+    lap 2 jolt at lap 2457 m (1481.5, 399.3, -6584.3) 3.3 m/s within 0.1 s at 20 m/s (designed: in the tube)
+    lap 2 jolt at lap 3089 m (1560.8, 392.7, -6994.7) 5.9 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 3278 m (1596.6, 373.8, -7182.4) 4.0 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 3434 m (1621.2, 368.9, -7341.1) 14.3 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 3593 m (1645.0, 364.9, -7499.9) 7.6 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 3752 m (1668.8, 359.6, -7658.6) 16.9 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 3911 m (1692.6, 359.3, -7817.1) 18.4 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 4078 m (1717.5, 366.6, -7983.6) 4.3 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 4237 m (1735.0, 365.7, -8143.1) 7.8 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 4372 m (1749.1, 365.4, -8277.3) 8.2 m/s within 0.1 s at 133 m/s (designed: in the tube)
+    lap 2 hop at lap 4475 m (1760.9, 368.7, -8389.7) 0.36 s off the ground at 20 m/s (designed: in the tube)
+    lap 2 jolt at lap 4476 m (1761.1, 367.5, -8313.5) 4.5 m/s within 0.1 s at 24 m/s (designed: in the tube)
+    lap 2 hop at lap 4476 m (1761.3, 375.0, -8305.5) 3.62 s off the ground at 22 m/s
+    lap 2 jolt at lap 4351 m (1759.8, 371.9, -8256.4) 4.5 m/s within 0.1 s at 18 m/s
+FAIL  A/C1 wings_and_wheels normal Needle 600: no unwanted hop over 0.3 s, no hard jolt  -  5 hops, 4 jolts
+  wings_and_wheels normal Street Classic: finished, laps 2:36.294 / 2:04.438 / 2:38.368, resets 0, lake 0, stuck 0
+    lap 2 hop at lap 2073 m (1277.9, 399.3, -6499.6) 0.40 s off the ground at 22 m/s
+    lap 2 jolt at lap 2079 m (1272.2, 396.9, -6489.1) 4.2 m/s within 0.1 s at 22 m/s
+    lap 2 hop at lap 2071 m (1279.9, 398.9, -6411.6) 0.62 s off the ground at 16 m/s
+    lap 2 jolt at lap 2060 m (1291.1, 398.5, -6411.1) 3.2 m/s within 0.1 s at 14 m/s
+    lap 2 hop at lap 2038 m (1312.9, 401.3, -6438.2) 0.52 s off the ground at 21 m/s (designed: in the tube)
+    lap 2 hop at lap 2015 m (1335.8, 399.1, -6455.3) 0.62 s off the ground at 4 m/s (designed: in the tube)
+    lap 2 jolt at lap 3087 m (1560.4, 392.4, -6993.0) 4.0 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 3279 m (1597.1, 373.4, -7184.6) 6.0 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 3436 m (1621.5, 368.6, -7343.3) 17.8 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 3595 m (1645.3, 364.7, -7502.1) 7.7 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 3754 m (1669.1, 359.1, -7660.8) 12.5 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 3913 m (1692.9, 359.2, -7819.3) 15.4 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 4080 m (1717.9, 366.5, -7985.8) 6.8 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 4239 m (1735.2, 365.4, -8145.3) 4.1 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 4374 m (1749.3, 365.3, -8279.4) 3.4 m/s within 0.1 s at 135 m/s (designed: in the tube)
+    lap 2 jolt at lap 4476 m (1761.1, 367.9, -8313.4) 3.9 m/s within 0.1 s at 23 m/s (designed: in the tube)
+    lap 2 hop at lap 4476 m (1761.0, 375.3, -8305.5) 3.58 s off the ground at 22 m/s
+    lap 2 jolt at lap 4351 m (1759.6, 371.8, -8256.2) 17.6 m/s within 0.1 s at 13 m/s
+FAIL  A/C1 wings_and_wheels normal Street Classic: no unwanted hop over 0.3 s, no hard jolt  -  3 hops, 3 jolts
+  wings_and_wheels HIGH Needle 600: finished, laps 2:05.182 / 1:53.377 / 2:11.068, resets 1, lake 0, stuck 1 stuck at (1479, -6568) s 7178 (tilted 0 deg, 4 wheels down, against sc Chamber J25 room, sc Net M7d barrel; stuck_29.png): reset;
+    lap 1 jolt at lap 1659 m (1662.5, 401.0, -6562.4) 3.5 m/s within 0.1 s at 46 m/s
+    lap 2 hop at lap 2064 m (1287.1, 399.8, -6499.5) 0.40 s off the ground at 32 m/s
+    lap 2 jolt at lap 2078 m (1272.9, 396.9, -6491.9) 5.0 m/s within 0.1 s at 29 m/s
+    lap 2 hop at lap 2091 m (1261.1, 397.9, -6458.1) 0.36 s off the ground at 27 m/s
+    lap 2 hop at lap 2072 m (1279.2, 398.6, -6411.1) 0.74 s off the ground at 17 m/s
+    lap 2 jolt at lap 2059 m (1291.8, 398.7, -6410.8) 4.5 m/s within 0.1 s at 13 m/s
+    lap 2 hop at lap 2053 m (1297.9, 400.7, -6423.3) 0.48 s off the ground at 18 m/s
+    lap 2 jolt at lap 2047 m (1303.8, 400.2, -6431.2) 3.2 m/s within 0.1 s at 18 m/s
+    lap 2 hop at lap 2038 m (1312.3, 401.1, -6440.1) 0.54 s off the ground at 24 m/s (designed: in the tube)
+    lap 2 jolt at lap 2003 m (1348.6, 398.2, -6465.1) 3.2 m/s within 0.1 s at 24 m/s (designed: in the tube)
+    lap 2 jolt at lap 3089 m (1560.9, 392.1, -6995.2) 6.5 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 3279 m (1596.8, 373.3, -7183.0) 4.5 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 3430 m (1620.7, 368.4, -7337.8) 5.1 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 3589 m (1644.5, 364.2, -7496.6) 6.9 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 3745 m (1667.7, 359.7, -7651.5) 17.2 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 3904 m (1691.5, 358.3, -7810.0) 22.7 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 4078 m (1717.6, 366.2, -7984.1) 4.9 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 4237 m (1735.1, 365.2, -8143.7) 6.9 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 4370 m (1748.8, 364.7, -8275.2) 13.5 m/s within 0.1 s at 135 m/s (designed: in the tube)
+    lap 2 jolt at lap 4476 m (1761.1, 367.5, -8313.6) 4.4 m/s within 0.1 s at 24 m/s (designed: in the tube)
+    lap 2 hop at lap 4476 m (1761.1, 374.9, -8305.5) 4.00 s off the ground at 25 m/s
+    lap 2 jolt at lap 4339 m (1759.3, 371.8, -8244.0) 10.0 m/s within 0.1 s at 18 m/s
+    lap 3 jolt at lap 1658 m (1659.5, 400.9, -6565.0) 3.4 m/s within 0.1 s at 39 m/s
+    lap 3 hop at lap 2998 m (1684.6, 392.3, -6906.3) 0.56 s off the ground at 29 m/s
+FAIL  A/C1 wings_and_wheels HIGH Needle 600: no unwanted hop over 0.3 s, no hard jolt  -  6 hops, 6 jolts
+  wings_and_wheels HIGH Street Classic: finished, laps 2:19.223 / 2:17.190 / 2:32.198, resets 3, lake 0, stuck 3 stuck at (1321, -6446) s 6974 (tilted 20 deg, 3 wheels down, against sc Pipe X_KEN barrel, sc Pipe X_KEN cuts and headwalls; stuck_30.png): reset; stuck at (1481, -6568) s 7178 (tilted 0 deg, 4 wheels down, against sc Chamber J25 room, sc Net M7d barrel; stuck_31.png): reset; stuck at (1778, -8247) s 9242 (tilted 1 deg, 4 wheels down, against BusinessBodies_13_-65; stuck_32.png): reset;
+    lap 2 hop at lap 2068 m (1283.7, 399.7, -6498.9) 0.38 s off the ground at 27 m/s
+    lap 2 jolt at lap 2078 m (1272.9, 396.9, -6490.1) 3.5 m/s within 0.1 s at 26 m/s
+    lap 2 hop at lap 2071 m (1279.6, 398.8, -6412.3) 0.62 s off the ground at 15 m/s
+    lap 2 jolt at lap 2060 m (1290.3, 398.4, -6412.2) 3.2 m/s within 0.1 s at 14 m/s
+    lap 2 hop at lap 2053 m (1297.1, 400.4, -6425.9) 0.34 s off the ground at 18 m/s
+    lap 2 jolt at lap 2050 m (1300.4, 399.4, -6433.7) 3.0 m/s within 0.1 s at 17 m/s
+    lap 2 jolt at lap 2031 m (1319.8, 399.7, -6444.3) 4.2 m/s within 0.1 s at 15 m/s (designed: in the tube)
+    lap 2 jolt at lap 3088 m (1560.6, 392.2, -6994.0) 5.1 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 3277 m (1596.5, 373.4, -7181.7) 3.4 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 3433 m (1621.1, 368.4, -7340.4) 12.6 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 3592 m (1644.9, 364.4, -7499.2) 7.5 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 3751 m (1668.7, 359.1, -7657.9) 18.0 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 3906 m (1691.9, 358.4, -7812.6) 23.1 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 4077 m (1717.4, 366.1, -7982.9) 3.6 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 4236 m (1734.9, 365.2, -8142.4) 9.0 m/s within 0.1 s at 196 m/s (designed: in the tube)
+    lap 2 jolt at lap 4369 m (1748.7, 364.6, -8273.9) 15.9 m/s within 0.1 s at 135 m/s (designed: in the tube)
+    lap 2 jolt at lap 4476 m (1761.1, 367.9, -8313.6) 3.9 m/s within 0.1 s at 22 m/s (designed: in the tube)
+    lap 2 hop at lap 4476 m (1761.0, 375.3, -8305.5) 3.52 s off the ground at 22 m/s
+    lap 2 jolt at lap 4353 m (1759.6, 371.8, -8257.6) 17.0 m/s within 0.1 s at 13 m/s
+FAIL  A/C1 wings_and_wheels HIGH Street Classic: no unwanted hop over 0.3 s, no hard jolt  -  4 hops, 4 jolts
+  spots pictured: viki 1343, viki 1569, viki 1590, viki 1659, viki 2343, viki 4811, viki 4835, viki 4861, viki 4893, viki 4914, viki 4953, viki 4988, viki 6788, viki 7333, viki 7357, wing 1065, wing 1658, wing 2046, wing 2066, wing 2091, wing 2998, wing 4339, wing 4476
+
+1 of 9 checks passed.
