@@ -76,7 +76,37 @@ namespace Racer
             // Chastain Rush, Round 74 (H): a second plane, the Sky Dart (Tools/Blender/plane_dart.py): a low-wing racing single-seater, faster and quicker
             // to roll than the Sky Hopper; the same ground numbers and box, its own flight numbers (PlaneFlight takes them on Begin)
             PlaneDart,
+            // Chastain Rush, Round 94 (A, Dan: "nicer more realistic looking cars with some speed and handling ... 1961 Jaguar E-type, 1965 Shelby
+            // Cobra, lambos, porshes"): eight cars of our own design (Tools/Blender/cars94.py), invented names, no marks. Supercars quickest, the
+            // classics lively but slidier. Engine = the engine note (VehicleSoundSynthesis). LowRoof: the rider's hat is left off (the roof clears
+            // the head only). Unlock: "egg-N" (the goose egg tier N, ChastainRush.VehicleUnlocks) or "campaign" (Round 95's events). Appended.
+            new() { Id="copperhead", Name="Copperhead V8", Class="Car", Description="1960s V8 roadster / big power, short and light / lively tail", Speed=55, Acceleration=17.5f, Grip=24, Response=9.2f, Mass=1050, Wheelbase=2.28f, Pitch=.86f, Size=new(1.75f,.6f,4f), Camera=new(0,3.4f,-7.4f),
+                Model="Copperhead", Seat=new(-.33f,-.10f,-.42f), Base="original", Engine="v8", LowRoof=true, Unlock="egg-10" },
+            new() { Id="marlow", Name="Marlow Sprint", Class="Car", Description="1960s long-bonnet coupe / smooth straight six / balanced, a little slidey", Speed=54, Acceleration=15.5f, Grip=24.5f, Response=8.4f, Mass=1250, Wheelbase=2.44f, Pitch=1, Size=new(1.75f,.65f,4.4f), Camera=new(0,3.5f,-7.8f),
+                Model="Marlow", Seat=new(-.36f,-.10f,-.55f), Base="original", Engine="six", LowRoof=true, Unlock="egg-60" },
+            new() { Id="falke", Name="Falke 2.0", Class="Car", Description="1960s rear-engined coupe / flat six / quick turn-in, the tail wants to come round", Speed=53.5f, Acceleration=15.5f, Grip=25.5f, Response=9.4f, Mass=1050, Wheelbase=2.22f, Pitch=1.1f, Size=new(1.7f,.65f,3.9f), Camera=new(0,3.4f,-7.3f),
+                Model="Falke", Seat=new(-.34f,-.08f,-.18f), Base="original", Engine="flat6", LowRoof=true, Unlock="campaign" },
+            new() { Id="brawler", Name="Brawler 440", Class="Car", Description="1960s muscle car / huge V8 shove / heavy, loose at the rear", Speed=55.5f, Acceleration=17.5f, Grip=22.5f, Response=6.8f, Mass=1650, Wheelbase=2.84f, Pitch=.8f, Size=new(2f,.72f,5f), Camera=new(0,3.8f,-8.4f),
+                Model="Brawler", Seat=new(-.40f,-.04f,-.20f), Base="tourer", Engine="v8", Unlock="campaign" },
+            new() { Id="meridian", Name="Meridian GT", Class="Car", Description="Modern grand tourer / front V8 / fast, planted and heavy", Speed=57, Acceleration=16.5f, Grip=27.5f, Response=8.2f, Mass=1700, Wheelbase=2.76f, Pitch=.92f, Size=new(2f,.65f,4.7f), Camera=new(0,3.7f,-8.3f),
+                Model="Meridian", Seat=new(-.38f,-.10f,-.42f), Base="tourer", Engine="v8", LowRoof=true, Unlock="campaign" },
+            new() { Id="stiletto", Name="Stiletto 400", Class="Car", Description="1970s wedge supercar / mid V12 / very fast, sharp", Speed=58, Acceleration=17, Grip=28, Response=8.8f, Mass=1450, Wheelbase=2.5f, Pitch=1.2f, Size=new(2f,.62f,4.15f), Camera=new(0,3.5f,-7.9f),
+                Model="Stiletto", Seat=new(-.38f,-.13f,-.15f), Base="original", Engine="v12", LowRoof=true, Unlock="campaign" },
+            new() { Id="falker", Name="Falke R", Class="Car", Description="Modern rear-engined sports car / flat six / grippiest, quickest to turn", Speed=58.5f, Acceleration=18, Grip=30, Response=10, Mass=1450, Wheelbase=2.44f, Pitch=1.15f, Size=new(2f,.65f,4.35f), Camera=new(0,3.5f,-7.8f),
+                Model="FalkeR", Seat=new(-.36f,-.10f,-.18f), Base="original", Engine="flat6", LowRoof=true, Unlock="campaign" },
+            new() { Id="tempesta", Name="Tempesta V12", Class="Car", Description="Modern V12 supercar / the fastest car / huge grip", Speed=61, Acceleration=19, Grip=31, Response=9.8f, Mass=1550, Wheelbase=2.72f, Pitch=1.28f, Size=new(2.1f,.62f,4.55f), Camera=new(0,3.6f,-8.1f),
+                Model="Tempesta", Seat=new(-.38f,-.14f,-.12f), Base="original", Engine="v12", LowRoof=true, Unlock="egg-250" },
+            // Round 94 (B): three more planes (Tools/Blender/planes94.py), the egg tiers' prizes
+            Barnstormer, Hornet, KestrelJet,
         };
+        // Round 94: the engine note ("v8", "six", "flat6", "v12"; null = the shared one), the hat left off in a low car, what earns a locked vehicle
+        public string Engine; public bool LowRoof;
+        public static readonly VehicleProfile Barnstormer = new() { Id="biplane", Name="Barnstormer", Class="Plane", Description="1920s biplane / slowest plane, the most agile: rolls and loops easily", Speed=44, Acceleration=7.5f, Grip=16, Response=6, Mass=900, Wheelbase=2.4f, Pitch=.8f, Size=new(1.3f,1.5f,7.6f), Camera=new(0,4.6f,-17f),
+                Model="Barnstormer", Seat=new(0f,-.10f,-.75f), Base="original", Suspension=1.42f, SolidContact=true, PlaneTop=105f, PlaneRoll=150f, PlanePitch=72f, PlaneBank=85f, PlaneGain=.26f, PlaneSpan=4.5f, Engine="radial", Unlock="egg-25" };
+        public static readonly VehicleProfile Hornet = new() { Id="hornet", Name="Hornet Racer", Class="Plane", Description="1930s air racer / huge engine, fast and twitchy", Speed=50, Acceleration=9, Grip=16, Response=6, Mass=1000, Wheelbase=2.4f, Pitch=1, Size=new(1.3f,1.5f,7.6f), Camera=new(0,4.4f,-16f),
+                Model="Hornet", Seat=new(0f,.02f,-1.95f), Base="original", Suspension=1.42f, SolidContact=true, PlaneTop=150f, PlaneRoll=190f, PlanePitch=60f, PlaneBank=88f, PlaneGain=.32f, PlaneSpan=3.3f, Engine="radial", Unlock="egg-125" };
+        public static readonly VehicleProfile KestrelJet = new() { Id="jet", Name="Kestrel Jet", Class="Plane", Description="Jet trainer / the fastest plane / smooth and quick", Speed=52, Acceleration=9.5f, Grip=16, Response=6, Mass=1300, Wheelbase=2.6f, Pitch=1, Size=new(1.3f,1.5f,7.6f), Camera=new(0,4.6f,-17f),
+                Model="KestrelJet", Seat=new(0f,-.12f,.35f), Base="original", Suspension=1.42f, SolidContact=true, PlaneTop=165f, PlaneRoll=175f, PlanePitch=58f, PlaneBank=85f, PlaneGain=.30f, PlaneSpan=4.0f, Engine="jet", Unlock="egg-190" };
         public bool Flies => Class == "Helicopter" || Class == "Plane";   // Round 63; Round 69: the plane
         public static readonly VehicleProfile Plane = new() { Id="plane", Name="Sky Hopper", Class="Plane", Description="Plane / Free Roam only / take off from the airport's runway and fly the whole map", Speed=46, Acceleration=7.5f, Grip=16, Response=6, Mass=1100, Wheelbase=2.56f, Pitch=1, Size=new(1.3f,1.5f,7.6f), Camera=new(0,4.6f,-17f),
                 Model="Plane", Seat=new(-.30f,-.30f,.55f), Base="original", Suspension=1.42f, SolidContact=true };

@@ -541,6 +541,8 @@ namespace ChastainRush
             }
             if (PipeExpress.Instance)
                 Step(n++, "pipeexpress", "Pipe express:   " + PipeExpress.ModeNames[(int)PipeExpress.Setting], d => { PipeExpress.Setting = (PipeExpress.Mode)(((int)PipeExpress.Setting + d + 3) % 3); Show(); });
+            // Round 94 (C): every locked vehicle opened for testing (this session only; nothing saved)
+            Step(n++, "unlockall", "Unlock all vehicles (testing):   " + (VehicleUnlocks.UnlockAll ? "On" : "Off"), d => { VehicleUnlocks.UnlockAll = !VehicleUnlocks.UnlockAll; Show(); });
             Row(n++, "game", "Game menu", GameMenuFromDebug);
             Row(n++, "back", pages.Count > 0 ? "Back" : "Resume", BackPage);
         }

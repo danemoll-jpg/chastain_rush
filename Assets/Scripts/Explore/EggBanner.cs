@@ -53,10 +53,20 @@ namespace ChastainRush
             if (!panel) Build();
             tierShown = tier > 0;
             title.text = tierShown ? $"TIER {tierNumber} REACHED:  {tier} EGGS" : $"GOOSE EGG FOUND   {found} / {total}";
-            area.text = tierShown ? $"Goose eggs {found} / {total}   ·   {(string.IsNullOrEmpty(areaName) ? "" : areaName + "  " + areaCount)}" : string.IsNullOrEmpty(areaName) ? "" : $"{areaName}   {areaCount}";
+            string got = tierShown ? VehicleUnlocks.Announce(tier) : "";   // Round 94 (C): what the tier unlocks
+            area.text = tierShown && got != "" ? $"UNLOCKED:  {got}   ·   goose eggs {found} / {total}" : tierShown ? $"Goose eggs {found} / {total}   ·   {(string.IsNullOrEmpty(areaName) ? "" : areaName + "  " + areaCount)}" : string.IsNullOrEmpty(areaName) ? "" : $"{areaName}   {areaCount}";
             Last = title.text + " / " + area.text;
             until = Time.unscaledTime + (tierShown ? TierSeconds : Seconds);
             if (source) source.PlayOneShot(tierShown ? fanfare : chime, .5f * SoundMix.Gain(SoundMix.Kind.Effects));
+        }
+
+        // Round 94 (C): a banner of its own text (an unlock earned before this build), gold as a tier's
+        public static void ShowText(string title, string line, bool gold)
+        {
+            if (!current) current = new GameObject("Egg banner").AddComponent<EggBanner>();
+            if (!current.panel) current.Build();
+            current.tierShown = gold; current.title.text = title; current.area.text = line; Last = title + " / " + line; current.until = Time.unscaledTime + TierSeconds;
+            if (current.source) current.source.PlayOneShot(gold ? current.fanfare : current.chime, .5f * SoundMix.Gain(SoundMix.Kind.Effects));
         }
 
         void LateUpdate()

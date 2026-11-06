@@ -138,9 +138,10 @@ namespace ChastainRush
         public string twin;
         public bool mixed_ai, pipe_express, air_start;
         public bool Allows(string direction) => directions == null || directions.Length == 0 || Array.IndexOf(directions, direction) >= 0;
-        public bool AllowsVehicle(string id) => air ? vehicles != null && Array.IndexOf(vehicles, id) >= 0 :   // Round 71: an air route's own (the plane) only
+        public bool AllowsVehicle(string id) => air ? vehicles != null && (Array.IndexOf(vehicles, id) >= 0 || Array.IndexOf(vehicles, "plane") >= 0 && Racer.VehicleProfile.Find(id).IsPlane && Racer.VehicleProfile.Find(id).Id == id) :   // Round 71: an air route's own (the plane) only; Round 94 (B): a route that takes the Sky Hopper takes every plane
             !Racer.VehicleProfile.Find(id).Stunt && !Racer.VehicleProfile.Find(id).Flies &&   // Round 63: never the helicopter
-            (vehicles == null || vehicles.Length == 0 || Array.IndexOf(vehicles, id) >= 0);   // Round 36: never a stunt vehicle (Racer: Free Roam and the Stunt event only)
+            (vehicles == null || vehicles.Length == 0 || Array.IndexOf(vehicles, id) >= 0
+             || Array.IndexOf(vehicles, "original") >= 0 && Racer.VehicleProfile.Find(id).Id == id && Racer.VehicleProfile.Find(id).Unlock is string u && (u.StartsWith("egg-") || u == "campaign") && !Racer.VehicleProfile.Find(id).IsPlane);   // Round 94: a route that takes the Street Classic takes the new cars; Round 36: never a stunt vehicle (Racer: Free Roam and the Stunt event only)
     }
 
     public sealed class RaceGate

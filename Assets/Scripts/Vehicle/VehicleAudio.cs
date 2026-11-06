@@ -16,6 +16,7 @@ namespace Racer
         readonly Dictionary<Mesh, (int[] indices, Color[] colors)> surfaces = new();
         float rpm = .85f, load, road, nextImpact, airborne, downward, impactGain;
         bool wasGrounded;
+        string voiceNow; AudioClip plain0, plain1;   // Round 94
         public float Slip { get; private set; }
         public float RoadWeight => road;
         public int ImpactCount { get; private set; }
@@ -56,6 +57,14 @@ namespace Racer
             float revs = .82f + Mathf.Sqrt(Mathf.Clamp01(speed / car.topSpeed)) * 1.25f + load * .22f;
             rpm = Mathf.MoveTowards(rpm, revs, dt * (pedal > .05f ? 1.25f : .65f));
             var configuration = GetComponent<VehicleConfiguration>();
+            // Chastain Rush, Round 94 (A): the new cars' own engine notes (VehicleProfile.Engine); put back the shared one for the others
+            string want = configuration && configuration.Profile != null ? configuration.Profile.Engine : null;
+            if (want != voiceNow && voices[0] && voices[1])
+            {
+                voiceNow = want; plain0 ??= clips[0]; plain1 ??= clips[1];
+                clips[0] = want == null ? plain0 : VehicleSoundSynthesis.Voiced("Engine idle", 0, want); clips[1] = want == null ? plain1 : VehicleSoundSynthesis.Voiced("Engine load", 1, want);
+                for (int k = 0; k < 2; k++) { voices[k].clip = clips[k]; voices[k].Play(); }
+            }
             float pitch = configuration ? configuration.Profile.Pitch : 1;
             voices[0].pitch = rpm * pitch; voices[1].pitch = rpm * pitch * 1.005f;
             bool engine = true;

@@ -18,9 +18,11 @@ namespace ChastainRush
             if (!h) { Clear("GOOSE EGGS", "No egg hunt in this build."); Row(0, "back", "Back", BackPage); return; }
             var areas = EggAreas.Of(h); eggArea = areas.Length == 0 ? 0 : (eggArea % areas.Length + areas.Length) % areas.Length;
             int next = h.tiers.Where(t => t > h.Found).DefaultIfEmpty(0).Min();
-            string tiers = string.Join("  ·  ", h.tiers.Select((t, i) => h.TiersReached.Contains(t) ? $"{t} ✓" : $"{t}"));
+            // Round 94 (C): what each tier unlocks
+            string Prize(int t) { var v = VehicleUnlocks.ForTier(t); return v.Length == 0 ? "" : " " + string.Join(", ", v.Select(p => p.Name)); }
+            string tiers = string.Join("  ·  ", h.tiers.Select((t, i) => h.TiersReached.Contains(t) || h.Found >= t ? $"{t}{Prize(t)} ✓" : $"{t}{Prize(t)}"));
             var a = areas.Length > 0 ? areas[eggArea] : null;
-            Clear("GOOSE EGGS", $"Found {h.Found} / {h.Total}{(next > 0 ? $"   ·   next tier at {next}" : "   ·   every tier reached")}\nTiers: {tiers}   (what each one unlocks comes later)" +
+            Clear("GOOSE EGGS", $"Found {h.Found} / {h.Total}{(next > 0 ? $"   ·   next tier at {next}" : "   ·   every tier reached")}\nUnlocks: {tiers}" +
                                 (a != null ? $"\n{a.name}: {a.Count(h)}{(a.Done(h) ? "  ✓" : "")}.  {a.direction}." : "") + (h.Error != null ? "\n" + h.Error : ""));
             int n = 0;
             if (a != null) Step(n++, "egg-area", $"{a.name}   {a.Count(h)}   ·   {eggArea + 1} / {areas.Length}", d => { eggArea += d; Show(); });

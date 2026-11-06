@@ -30,7 +30,7 @@ namespace ChastainRush
         public static EggHunt Instance { get; private set; }
         public static string SaveName = "goose-eggs-v1.json";
         Save data = new Save(); string path, error;
-        Transform[] tokens; Vector3 previous; bool sampled; Material shell, straw;
+        Transform[] tokens; Vector3 previous; bool sampled, earlierShown; Material shell, straw;
         public int Found => data.found.Count(id => sites.Any(s => s.id == id));
         public int Total => sites.Length;
         public bool Discovered(string id) => data.found.Contains(id);
@@ -161,6 +161,8 @@ namespace ChastainRush
         {
             if (tokens == null) return;
             var car = Player(); bool on = Hunting && car;
+            // Round 94 (C): a vehicle earned by eggs found before this build is announced once, when the player is first out in Free Roam
+            if (on && !earlierShown && !GameMenus.Open && !WorldMap.IsOpen && Time.timeSinceLevelLoad > 4f) { earlierShown = true; VehicleUnlocks.AnnounceEarlier(); }
             for (int i = 0; i < tokens.Length; i++)
             {
                 bool visible = on && !data.found.Contains(sites[i].id) && (car.transform.position - sites[i].position).sqrMagnitude < 180f * 180f;

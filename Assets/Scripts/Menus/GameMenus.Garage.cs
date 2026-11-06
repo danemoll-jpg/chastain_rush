@@ -64,7 +64,7 @@ namespace ChastainRush
         void LeaveGarageView()
         {
             if (!garageView) return;
-            garageView = false; rotateAction.Disable(); previewCamera.enabled = false;
+            garageView = false; rotateAction.Disable(); previewCamera.enabled = false; garageShown = null; ShowPadlock(false);
             card.sizeDelta = menuCardSize; ((RectTransform)scroll.transform).offsetMin = new Vector2(32, 78);
             garagePanel.gameObject.SetActive(false);
             if (statBlock) statBlock.gameObject.SetActive(false);
@@ -82,35 +82,67 @@ namespace ChastainRush
             var rdG = race ? race.RouteData : null;
             var all = VehicleProfile.All.Where(v => garageFor == "route" ? rdG != null && rdG.AllowsVehicle(v.Id) : garageFor == "stunt" ? v.Stunt : garageFor == "race" ? !v.Stunt && !v.Flies : garageFor == "roam" || !v.Flies).ToArray();
             if (all.Length == 0) all = new[] { profile };
-            int at = Mathf.Max(0, Array.FindIndex(all, v => v.Id == profile.Id));
-            Clear(profile.Name + " / " + profile.Class, profile.Description);
-            heading.text = profile.Name + " / " + profile.Class;
+            // Round 94 (C): a locked vehicle is shown where it stands in the list (its model, stats, a padlock and how to unlock it) but never put on:
+            // the garage's cursor rests on it while the vehicle you drive stays (garageShown; cleared when the garage is left)
+            var shown = garageShown != null && all.Any(v => v.Id == garageShown) && VehicleUnlocks.Locked(garageShown) ? VehicleProfile.Find(garageShown) : profile;
+            bool locked = shown != profile;
+            int at = Mathf.Max(0, Array.FindIndex(all, v => v.Id == shown.Id));
+            Clear(shown.Name + " / " + shown.Class, shown.Description);
+            heading.text = (locked ? "LOCKED:  " : "") + shown.Name + " / " + shown.Class;
             // Round 70 (C, Dan: "In race setup, I am not able to select a car in the garage some times"): a finished race counted as racing,
             // so race setup's garage after a race had its vehicle row shut; only a race under way (the countdown, the race) holds the vehicle
             bool racing = race && (race.State == RaceController.Stage.Countdown || race.State == RaceController.Stage.Racing);
-            Step(0, "vehicle", $"{profile.Name}   ·   {at + 1} / {all.Length}", d =>
+            Step(0, "vehicle", $"{(locked ? "[locked]  " : "")}{shown.Name}   ·   {at + 1} / {all.Length}", d =>
             {
                 if (racing) return;   // the vehicle is chosen before a race, not during one
-                vehicles.Select(all[(at + d + all.Length) % all.Length].Id, garageFor == "race" || garageFor == "route" ? VehicleSwitch.Pick.Race : garageFor == "stunt" ? VehicleSwitch.Pick.Forced : VehicleSwitch.Pick.Roam); Show();
+                var next = all[(at + d + all.Length) % all.Length];
+                if (VehicleUnlocks.Locked(next)) { garageShown = next.Id; Show(); return; }
+                garageShown = null;
+                if (next.Id != profile.Id) vehicles.Select(next.Id, garageFor == "race" || garageFor == "route" ? VehicleSwitch.Pick.Race : garageFor == "stunt" ? VehicleSwitch.Pick.Forced : VehicleSwitch.Pick.Roam);
+                Show();
             });
             int colour = vehicles.Colour;
             Step(1, "colour", "Color:    " + (colour < 0 ? "Standard" : VehiclePaint.Name(colour)), d =>
             {
+                if (locked) return;
                 int next = colour < 0 ? (d > 0 ? 0 : VehiclePaint.Count - 1) : colour + d;
                 vehicles.SetColour(next < 0 || next >= VehiclePaint.Count ? -1 : next); Show();
             });
             Row(2, "rider", "Rider…", () => Navigate("rider"));   // Round 29
             Row(3, "done", "Done", BackPage);
             if (racing) { buttons[0].interactable = false; details.text = profile.Description + "\nThe vehicle can be changed outside a race."; }
+            if (locked) { buttons[1].interactable = false; details.text = "HOW TO UNLOCK:  " + VehicleUnlocks.HowTo(shown) + "\n" + shown.Description + $"\nYou drive the {profile.Name} until then."; }
             // the stat bars sit under the colour row (display only, no selection)
-            ShowGarageStats(profile);
+            ShowGarageStats(shown);
             statBlock.SetSiblingIndex(buttons[1].transform.GetSiblingIndex() + 1);
             EnterGarageView();
             if (previewRoot) Destroy(previewRoot);
             previewRoot = new GameObject("Garage display model"); previewRoot.transform.SetParent(transform, false); previewRoot.transform.position = PreviewFocus;
-            config.BuildPreview(previewRoot.transform);
+            if (locked) VehicleVisual.Build(previewRoot.transform, shown, null, RiderLook.Player); else config.BuildPreview(previewRoot.transform);
+            ShowPadlock(locked);
             foreach (var t in previewRoot.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = 31;
             FramePreview(false);
+        }
+
+        // Round 94 (C): the garage's locked vehicle on show, and a padlock drawn over the preview's top corner (UI images: body, shackle, keyhole)
+        string garageShown; RectTransform padlock;
+        public string GarageShownId => garageShown;   // checks
+        void ShowPadlock(bool on)
+        {
+            if (!garagePanel) return;
+            if (!padlock && on)
+            {
+                padlock = Rect("Padlock", garagePanel); padlock.anchorMin = padlock.anchorMax = padlock.pivot = new Vector2(1, 1); padlock.anchoredPosition = new Vector2(-18, -16); padlock.sizeDelta = new Vector2(64, 78);
+                UnityEngine.UI.Image Part(string n, Vector2 min, Vector2 max, Color c) { var r = Rect(n, padlock); r.anchorMin = min; r.anchorMax = max; r.offsetMin = r.offsetMax = Vector2.zero; var i = r.gameObject.AddComponent<UnityEngine.UI.Image>(); i.color = c; i.raycastTarget = false; return i; }
+                var gold = new Color(1f, .82f, .3f);
+                Part("Shackle left", new Vector2(.16f, .5f), new Vector2(.30f, .96f), gold); Part("Shackle right", new Vector2(.70f, .5f), new Vector2(.84f, .96f), gold);
+                Part("Shackle top", new Vector2(.16f, .86f), new Vector2(.84f, 1f), gold);
+                Part("Body", new Vector2(0, 0), new Vector2(1, .56f), gold);
+                Part("Keyhole", new Vector2(.44f, .14f), new Vector2(.56f, .40f), new Color(.08f, .08f, .1f));
+                var label = Label("Locked", padlock, 16, 0); label.text = "LOCKED"; label.color = gold; label.alignment = TextAnchor.UpperCenter;
+                var lr = label.rectTransform; lr.anchorMin = new Vector2(-.5f, -.45f); lr.anchorMax = new Vector2(1.5f, -.05f); lr.offsetMin = lr.offsetMax = Vector2.zero;
+            }
+            if (padlock) padlock.gameObject.SetActive(on);
         }
 
         // ---------------------------------------------------------------- Round 29: Racer's Rider page

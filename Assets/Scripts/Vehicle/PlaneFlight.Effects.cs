@@ -31,8 +31,32 @@ namespace ChastainRush
 
         AudioSource engine, wind; static AudioClip engineClip; static Material discMaterial; float shownAt;
         // a looping propeller buzz: the firing pulses of a small four-cylinder at idle-ish (pitched up by the throttle), the blades' beat over it
-        static AudioClip EngineClip()
+        // Round 94 (B): the new planes' own notes: "radial" (a slower, deeper nine-cylinder beat), "jet" (a turbine's whine over a roar)
+        static AudioClip radialClip, jetClip;
+        static AudioClip EngineClip(string kind)
         {
+            if (kind == "jet")
+            {
+                if (jetClip) return jetClip; int jRate = 22050, jN = jRate; var jD = new float[jN]; var jRnd = new System.Random(94); float lo = 0, lo2 = 0;
+                for (int i = 0; i < jN; i++)
+                {
+                    float t = i / (float)jRate, w = (float)jRnd.NextDouble() - .5f; lo += (w - lo) * .08f; lo2 += (lo - lo2) * .2f;
+                    jD[i] = (Mathf.Sin(2f * Mathf.PI * 1200f * t) * .16f + Mathf.Sin(2f * Mathf.PI * 2400f * t) * .06f + Mathf.Sin(2f * Mathf.PI * 600f * t) * .08f + lo2 * 2.4f + (w - lo) * .10f) * .5f;
+                }
+                jetClip = AudioClip.Create("Jet engine", jN, 1, jRate, false); jetClip.SetData(jD, 0); return jetClip;
+            }
+            if (kind == "radial")
+            {
+                if (radialClip) return radialClip; int jRate = 22050, jN = jRate; var jD = new float[jN]; var jRnd = new System.Random(95);
+                for (int i = 0; i < jN; i++)
+                {
+                    float t = i / (float)jRate;
+                    float fire = Mathf.Pow(Mathf.Abs(Mathf.Sin(Mathf.PI * 36f * t)), 5f), lope = .75f + .25f * Mathf.Sin(2f * Mathf.PI * 4f * t);
+                    float tone = Mathf.Sin(2f * Mathf.PI * 72f * t) * .4f + Mathf.Sin(2f * Mathf.PI * 144f * t) * .2f + Mathf.Sin(2f * Mathf.PI * 216f * t) * .1f;
+                    jD[i] = (fire * .6f * lope + tone * lope + ((float)jRnd.NextDouble() - .5f) * .14f) * .45f;
+                }
+                radialClip = AudioClip.Create("Radial engine", jN, 1, jRate, false); radialClip.SetData(jD, 0); return radialClip;
+            }
             if (engineClip) return engineClip;
             int rate = 22050, n = rate; var d = new float[n]; var rnd = new System.Random(69);
             for (int i = 0; i < n; i++)
@@ -52,8 +76,9 @@ namespace ChastainRush
                 // Round 71: another plane (a race's AI pilot, a replay's) is heard where it is, not in the player's ears
                 bool mine = Player == this;
                 AudioSource Src(AudioClip clip) { var a = gameObject.AddComponent<AudioSource>(); a.clip = clip; a.loop = true; a.spatialBlend = mine ? 0 : 1; a.dopplerLevel = mine ? 0 : .6f; a.minDistance = 25f; a.maxDistance = 700f; a.rolloffMode = AudioRolloffMode.Linear; a.volume = 0; a.priority = mine ? 90 : 140; a.Play(); return a; }
-                engine = Src(EngineClip()); wind = Src(PoliceHelicopter.Whoosh()); wind.pitch = 1.9f;
+                engine = Src(EngineClip(null)); wind = Src(PoliceHelicopter.Whoosh()); wind.pitch = 1.9f;
             }
+            { var cfgE = GetComponent<VehicleConfiguration>(); var want = EngineClip(cfgE && cfgE.Profile != null ? cfgE.Profile.Engine : null); if (engine.clip != want) { engine.clip = want; engine.Play(); } }   // Round 94 (B)
             if (discRenderer)
             {
                 if (!discMaterial) { var glass = Resources.Load<Material>("VehicleGlazing"); discMaterial = glass ? new Material(glass) { name = "Prop disc" } : null; if (discMaterial) { var c = new Color(.12f, .12f, .14f, .12f); discMaterial.color = c; if (discMaterial.HasProperty("_BaseColor")) discMaterial.SetColor("_BaseColor", c); discMaterial.SetFloat("_Smoothness", 0); } }

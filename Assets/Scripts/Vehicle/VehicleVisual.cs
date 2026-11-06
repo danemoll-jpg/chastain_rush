@@ -44,6 +44,8 @@ namespace Racer
         // 0.111 Part D: a Cup edition's gold trim (the model slots its profile names in Gold). Chastain Rush, Round 36
         static Material gold;
         static Material Gold{get{if(!gold){gold=Mat("Cup gold trim",new(.93f,.69f,.16f),.78f);gold.SetFloat("_Metallic",.85f);}return gold;}}
+        // Chastain Rush, Round 94: the new cars' red brake calipers
+        static Material caliper;static Material Caliper=>caliper?caliper:caliper=Mat("Brake caliper red",new(.72f,.06f,.04f),.6f);
         static Material Lens(string name,Color c){var m=Mat(name,c,.8f);m.EnableKeyword("_EMISSION");m.SetColor("_EmissionColor",Color.black);m.globalIlluminationFlags=MaterialGlobalIlluminationFlags.None;return m;}
         // look: the rider (null = the player's); classic: always the classic model (ambient traffic).
         public static Transform Build(Transform parent,VehicleProfile p,List<Transform> wheels=null,RiderLook look=null,bool classic=false)
@@ -140,7 +142,7 @@ namespace Racer
                 var t=r.transform;var parts=t.name.Split(new[]{"__"},System.StringSplitOptions.None);if(parts.Length!=2)continue;
                 string group=parts[0],slot=parts[1];
                 if(group=="Rider"){t.gameObject.SetActive(false);Object.Destroy(t.gameObject);continue;}
-                r.sharedMaterial=p.Gold!=null&&System.Array.IndexOf(p.Gold,slot)>=0?Gold:slot switch{"paint"=>paint,"cream"=>cream,"driver"=>driverMat,"metal"=>metal,"engine"=>engine,"rubber"=>rubber,"lamp"=>lamps,"tail"=>tail,"glass"=>glass,"chrome"=>chrome,"interior"=>interior,"white"=>White,"sirenred"=>SirenRed,"sirenblue"=>SirenBlue,_=>metal};
+                r.sharedMaterial=p.Gold!=null&&System.Array.IndexOf(p.Gold,slot)>=0?Gold:slot switch{"paint"=>paint,"cream"=>cream,"driver"=>driverMat,"metal"=>metal,"engine"=>engine,"rubber"=>rubber,"lamp"=>lamps,"tail"=>tail,"glass"=>glass,"chrome"=>chrome,"interior"=>interior,"white"=>White,"sirenred"=>SirenRed,"sirenblue"=>SirenBlue,"caliper"=>Caliper,_=>metal};
                 if(group=="Front"&&front)t.SetParent(front,true);
                 else if(group=="Steer")
                 {
@@ -164,6 +166,7 @@ namespace Racer
                     t.SetParent(pivot,true);
                 }
             }
+            if(p.LowRoof&&look!=null&&look.hat!=0){look=look.Copy();look.hat=0;}   // Chastain Rush, Round 94: the low cars' roofs clear the head only, so no hat
             Rider(pose,p.Pose,p.Pose=="Car"?p.Seat:Vector3.zero,look);
             foreach(var t in root.GetComponentsInChildren<Transform>(true))t.gameObject.layer=root.gameObject.layer;
             return true;

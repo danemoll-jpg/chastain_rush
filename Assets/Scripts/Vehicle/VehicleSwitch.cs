@@ -97,6 +97,7 @@ namespace ChastainRush
                 try { if (File.Exists(SavePath())) { Read(File.ReadAllText(SavePath()), out roamId, out raceId, out planeId, out colour); id = roamId ?? id; } }
                 catch (Exception e) { Debug.LogWarning("[Vehicle] saved choice unreadable: " + e.Message); }
             if (VehicleProfile.IndexOf(id) < 0) id = "original";
+            if (VehicleUnlocks.Locked(id) && forced == null) { Debug.Log($"[Vehicle] {id} is locked: the first of its type instead"); id = VehicleProfile.Find(id).IsPlane ? "plane" : "original"; }   // Round 94 (C)
             config.Apply(id);
             if (colour >= 0 && colour < VehiclePaint.Count) { Colour = colour; config.SetBodyColor(colour); }
             if (RaceController.Instance && player == 1) RaceController.Instance.ReloadRecords();
@@ -106,13 +107,15 @@ namespace ChastainRush
         public void Step(int d)
         {
             int n = VehicleProfile.All.Length, i = Mathf.Max(0, VehicleProfile.IndexOf(config.profileId));
-            Select(VehicleProfile.All[(i + d + n) % n].Id);
+            for (int k = 1; k <= n; k++) { var p = VehicleProfile.All[((i + d * k) % n + n) % n]; if (!VehicleUnlocks.Locked(p)) { Select(p.Id); return; } }   // Round 94 (C): past locked ones
         }
 
         public void Select(string id) => Select(id, Pick.Roam);
         public void Select(string id, Pick pick)
         {
             if (!config) config = GetComponent<VehicleConfiguration>();   // Round 37: player 2's, chosen before its first frame
+            // Round 94 (C): a locked vehicle is never put on for the player (a saved race / plane choice from HIGH MODE or "Unlock all"): its type's first instead
+            if (pick != Pick.Forced && player == 1 && VehicleUnlocks.Locked(id)) { Debug.Log($"[Vehicle] {id} is locked"); id = VehicleProfile.Find(id).IsPlane ? "plane" : "original"; }
             var car = GetComponent<ArcadeVehicle>();
             // where it stands: same place and heading, lifted a little so a bigger body does not start in the ground, at rest
             var t = transform; var fwd = Vector3.ProjectOnPlane(t.forward, Vector3.up);
