@@ -41,8 +41,10 @@ namespace ChastainRush
                 var oldPlane = clone.GetComponent<PlaneFlight>(); if (oldPlane) oldPlane.End();   // started afresh by Apply (its own engine, 3D)
                 cfg.riderLook = riders[n % riders.Length];
                 // Round 74 (H): AI pilots fly either plane (the route's planes; the opponents page's choice for the slot if it is one of them, else random)
-                var planeIds = (RouteData?.vehicles ?? new string[0]).Where(v => VehicleProfile.Find(v).IsPlane).ToArray(); if (planeIds.Length == 0) planeIds = new[] { VehicleProfile.Plane.Id };
-                var savedAi = SavedAiChoices(); string pid = ids != null ? ids[n] : n < savedAi.Length && planeIds.Contains(savedAi[n]) ? savedAi[n] : planeIds[UnityEngine.Random.Range(0, planeIds.Length)];   // Round 92 (F): a mixed race's
+                // Round 94 (B): every plane the route takes (RouteJson.AllowsVehicle: a route taking the Sky Hopper takes the new planes too); a check's
+                // AiVehiclesOverride names the slot's plane
+                var planeIds = VehicleProfile.All.Where(v => v.IsPlane && (RouteData == null || RouteData.AllowsVehicle(v.Id))).Select(v => v.Id).ToArray(); if (planeIds.Length == 0) planeIds = new[] { VehicleProfile.Plane.Id };
+                var savedAi = AiVehiclesOverride ?? SavedAiChoices(); string pid = ids != null ? ids[n] : n < savedAi.Length && planeIds.Contains(savedAi[n]) ? savedAi[n] : planeIds[UnityEngine.Random.Range(0, planeIds.Length)];   // Round 92 (F): a mixed race's
                 cfg.Apply(pid);
                 cfg.SetPaint(AiPaints[n % AiPaints.Length]);
                 float d = 45f + 45f * (n / 2), side = n % 2 == 0 ? 9f : -9f; if (n == 2) side = 0f;

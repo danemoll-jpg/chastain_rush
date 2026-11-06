@@ -64,7 +64,7 @@ namespace ChastainRush
         void LeaveGarageView()
         {
             if (!garageView) return;
-            garageView = false; rotateAction.Disable(); previewCamera.enabled = false; garageShown = null; ShowPadlock(false);
+            garageView = false; rotateAction.Disable(); previewCamera.enabled = false; if (!open || page != "garage") garageShown = null; ShowPadlock(false);   // (Show leaves and re-enters the view on every redraw: the cursor is kept while the garage stays open)
             card.sizeDelta = menuCardSize; ((RectTransform)scroll.transform).offsetMin = new Vector2(32, 78);
             garagePanel.gameObject.SetActive(false);
             if (statBlock) statBlock.gameObject.SetActive(false);

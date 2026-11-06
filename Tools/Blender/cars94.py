@@ -54,6 +54,19 @@ def loft_open(name, sections, group, slot, bevel=0.0):
     return kit.finish(ob, group, slot, bevel, 1)
 
 
+def double(ob):
+    """Both sides drawn: the faces copied with their normals turned (Unity culls back faces; a roof skin or a pane whose winding came out
+    inward vanished from outside in the game)."""
+    bm = bmesh.new(); bm.from_mesh(ob.data)
+    faces = list(bm.faces); new = []
+    for f in faces:
+        vs = [bm.verts.new(v.co) for v in f.verts]
+        try: new.append(bm.faces.new(list(reversed(vs))))
+        except ValueError: pass
+    bm.normal_update(); bm.to_mesh(ob.data); bm.free(); ob.data.update()
+    return ob
+
+
 def lerp(a, b, t): return a + (b - a) * t
 
 
@@ -155,7 +168,7 @@ class Car:
     def greenhouse(s):
         g = s.C['cab']; zs, zw, zrr, zb = g['zs'], g['zw'], g['zrr'], g['zb']
         zl = [lerp(zs - .001, zb + .001, i / 40) for i in range(41)]
-        loft_open('Glass', [s.gsec(z) for z in zl], G, 'glass')
+        double(loft_open('Glass', [s.gsec(z) for z in zl], G, 'glass'))
         # roof skin over the glass between the screen header and the rear header
         za, zc = zw - .03, (zrr + .06 if g.get('fastglass') else zrr - .02)
         rows = []
@@ -163,7 +176,7 @@ class Car:
             z = lerp(za, zc, i / 12); sec = s.gsec(z, .006); top = sec[2:-2]
             under = [(x * .98, y - .022, zz) for x, y, zz in reversed(top)]
             rows.append(top + under)
-        kit.loft('Roof', rows, G, g.get('roofslot', 'paint'), cap=True)
+        double(kit.loft('Roof', rows, G, g.get('roofslot', 'paint'), cap=True))
         # pillars along the glass corners: A (screen to roof), C (roof to the belt behind)
         pil = g.get('pillar', 'paint'); pr = g.get('pr', .028)
         for sg in (-1, 1):
@@ -180,7 +193,7 @@ class Car:
                     z = lerp(q, zb + .02, i / 8); sec = s.gsec(z, .008); side = sec[0:3] if sg > 0 else sec[-1:-4:-1]
                     inner = [(x - sg * .02, y, zz) for x, y, zz in reversed(side)]
                     rows.append(side + inner)
-                kit.loft('Sail', rows, G, pil if pil == 'paint' else 'paint', cap=True)
+                double(kit.loft('Sail', rows, G, pil if pil == 'paint' else 'paint', cap=True))
             bz = g.get('bpost')
             if bz is not None:
                 sec = s.gsec(bz, .006); p = [sec[0], sec[1], sec[2]] if sg > 0 else [sec[-1], sec[-2], sec[-3]]
@@ -195,7 +208,7 @@ class Car:
         for i in range(5):
             t = i / 4; z = zs - rake * t; y0 = s.door_top(zs) + .01 + h * t; hw = (s.W(zs) * .80) * (1 - .06 * t)
             rows.append([(hw * math.cos(a), y0 + .035 * math.sin(a) * 0 + (1 - abs(math.cos(a))) * .0, z - .06 * (1 - abs(math.cos(a)))) for a in [math.radians(d) for d in range(0, 181, 15)]])
-        loft_open('Screen', rows, G, 'glass')
+        double(loft_open('Screen', rows, G, 'glass'))
         top = rows[-1]; kit.tube('Screen frame', top, .016, G, 'chrome')
         for sg in (0, -1): kit.tube('Screen post', [rows[0][sg], rows[2][sg], rows[4][sg]], .018, G, 'chrome')
 

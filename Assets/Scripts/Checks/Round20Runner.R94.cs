@@ -181,7 +181,8 @@ namespace ChastainRush
                 while (Time.realtimeSinceStartup < end && ai.Any(e => !e.Finished) && !RaceStuck) yield return new WaitForSecondsRealtime(.5f);
                 Time.timeScale = 1f;
                 report.AppendLine($"  {r.Name}: " + string.Join("; ", ai.Select(e => $"{e.Name} {e.VehicleName} {(e.Finished && !e.Estimated ? RaceController.Fmt(e.FinalTotal) : "NOT finished")}, laps {string.Join(" / ", e.LapTimes.Select(v => RaceController.Fmt(v)))}, missed {e.MissedTotal}")));
-                Check($"AI {r.Name} in {string.Join(", ", f.ids.Select(Nm))}: every AI finishes", ai.All(e => e.Finished && !e.Estimated), string.Join(", ", ai.Where(e => !e.Finished || e.Estimated).Select(e => e.Name)));
+                bool theirs = ai.Select(e => e.VehicleName).OrderBy(x => x).SequenceEqual(f.ids.Select(Nm).OrderBy(x => x));
+                Check($"AI {r.Name} in {string.Join(", ", f.ids.Select(Nm))}: they race those vehicles and every AI finishes", theirs && ai.All(e => e.Finished && !e.Estimated), $"raced {string.Join(", ", ai.Select(e => e.VehicleName))}; " + string.Join(", ", ai.Where(e => !e.Finished || e.Estimated).Select(e => e.Name)));
                 race.EndRace(); Flush(); yield return new WaitForSecondsRealtime(.5f);
             }
             RaceController.AiVehiclesOverride = null; RoadDriver.Difficulty = prev; VehicleUnlocks.UnlockAll = false;
