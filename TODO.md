@@ -121,6 +121,47 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 94, NEW CARS (AND PLANES) WORTH DRIVING, UNLOCKS BEHIND THE GOOSE EGGS, ROUND 93's LEFTOVERS (Dan, 2026-11-05 20:28).** Round 93 is not yet driven by Dan. Item 0, the
+one-heavy-job rule, the check-runs-never-sit-stuck rule and the end-of-round clean-up apply. Short results. The campaign is the next round (QUEUED), and its event rewards use the
+unlock system built here.
+Dan: "I would like to get some new vehicles in general. For example literally none of the cars appeal to me. I would love to have some nicer more realistic looking cars with some
+speed and handling. Would love cars looking like 1961 Jaguar E-type, 1965 Shelby Cobra, lambos, porshes etc these could be unlockables from events or eggs. We could also hide some
+planes behind the eggs as well".
+A. A NEW CAR LINE-UP. At least eight new cars, clearly nicer and more realistic-looking than the current ones (more shape detail, proper proportions, chrome / glass / lights,
+   interior seen through the windows with the driver, wheels and tires that read as the real kind), still in the game's look and frame budget (Steam Deck setting included).
+   Styled after the classics and supercars Dan named, as OUR OWN designs with invented model names, no real brand names, badges or logos anywhere (no trademarked marks), e.g.:
+   a long-hood 1960s British roadster coupe (E-type style); a small 1960s V8 roadster with side pipes (Cobra style); a 1970s wedge supercar and a modern angular V12 supercar
+   (Lamborghini style); a rear-engined 1960s / 1970s sports coupe and a modern one (Porsche 911 style); plus two of Claude's choice that fit (e.g. a 1960s muscle car, a modern
+   grand tourer). Each its own handling and sound (Woodstock Rush's engine sounds or new ones that fit: a V8 rumble, a flat-six, a V12 scream), fast and grippy as its type
+   (supercars quickest, classics lively but slidier), every one fun on the courses, AI able to drive them; colors in the garage (three or more each). Blender generators as the
+   existing cars (`Tools/Blender/cars.py` and kit), committed. Pictures of each in the garage and on the road.
+B. NEW PLANES. Two or three more planes in the plane garage (e.g. a vintage racing monoplane, a jet trainer, a biplane), each its own speed and handling, windows with the pilot
+   visible, colors, Round 93 B's controls; AI pilots can fly them.
+C. UNLOCKS. Most new vehicles start locked: a lock icon and "How to unlock" in the garage. The goose egg tiers (10, 25, 60, 125, 190, 250) now unlock vehicles: the planes and some
+   cars behind the eggs (the best ones at the top tiers); the rest are left for the campaign's events (next round) and listed for it. The cars and planes that exist today stay
+   unlocked. HIGH MODE and split screen: everything unlocked, as now. A banner when something unlocks; Dan's save keeps what he has reached (his 19 eggs: tier 10 already
+   gives its vehicle). A debug-menu "unlock all" for testing. Say the table (tier -> vehicle).
+D. ROUND 93's LEFTOVERS. The small hops left on the quarry's jump pieces and at The Long One's run-up head; the 0.66 s hop at Wings & Wheels' tube mouth; the U-turn at Tower Road's
+   west end widened or eased so a bike at race speed gets round without hitting the barrier (Round 87's rules); the planes' lap on Wings & Wheels lengthened with another ring or
+   two (no slow rings) until within about 5 % of the cars (two attempts, then report).
+Check: item 0 for every item; every new vehicle driven / flown a lap of two courses by the human-like driver / pilot and raced by AI; the unlock table proven on a copy of Dan's save.
+PUBLISH through the launcher (prove the update from 0.93.0).
+For Dan to check: the new cars and planes (the garage, a race in each); what is locked and how; the Round 93 leftovers.
+
+## QUEUED rounds
+**Round 95: THE CAMPAIGN (Dan, 2026-11-05 20:28: "we can work on adding a campaign. I think we have a fair amount of tracks now that will make this worth while";
+held since 2026-10-16 until there were more tracks).** Port Woodstock Rush's campaign (`Racer/Assets/Scripts/Campaign*.cs`, `RaceMenus.Campaign.cs`, its chapters, events, results,
+progress saves; Racer read only, port rather than rewrite) and build Chastain Rush's on it: chapters that open the map in an order that makes sense (Chastain Glen first, as the
+starter, then the neighborhoods, the creek / trails, Town Center and the Noonday Creek Trail, Kennesaw, Marietta Square, the quarry, the air races and Wings & Wheels), events
+of every kind the game has (races forward / reverse, time trials, stunt park and quarry jumps, police chases and Speed Patrol, air races, Wings & Wheels, the Underground race),
+medals or placings to pass. STUNT TRACKS (Dan, 2026-11-05 20:33: "for stunts we can use kennesaw and the quarry as stunt tracks (they can be used as standard
+tracks as well)"): the Kennesaw Mountain trails and Viking Quarry also run as stunt events (scored on air time, distance, flips / rolls, clean landings, combos, as the stunt
+park's scoring; Woodstock Rush's Stunt Races if they fit), on the same courses, alongside their normal races; offered in race setup and in the campaign. And the vehicles Round 94 C left for the campaign as event rewards (and Woodstock Rush's shop / cups / playlists only if they fit: say). The
+campaign never changes Free Roam or HIGH MODE's everything-unlocked. Its menu reachable by controller, readable on the Deck. Check: the first two chapters played through by the
+human-like driver on a test save; a reward unlocking; the save surviving an update.
+
+## Previous delivery 1 (newest): Round 93
+**Not yet driven by Dan (0.93.0 published); he reviews it with Round 94.**
 **Round 93, THE QUARRY BUMP AFTER THE BIG ONE, PLANE ROLLS ONLY WITH A SHOULDER BUTTON, WINGS & WHEELS SMOOTHED (Dan, 2026-11-05 00:25, a photo of his screen on 0.92, no report).** Round 92 is reviewed
 (the update reached him). Item 0, the one-heavy-job rule and the end-of-round clean-up apply. Short results. (Dan, 00:33: the held quarry notes from 0.90 are irrelevant now: dropped.)
 A. THE QUARRY BUMP AFTER THE BIG ONE. Photo (lap 1, "CHECKPOINT 5 / 22" 340 m ahead: between "The Big One's run-out" (CP4, s 1782) and "the pit floor" (CP5, s 2180), so about s 1840;
@@ -169,12 +210,7 @@ Check runs (the new rule): the driver resets itself after 5 s with no progress (
 PUBLISHED 0.93.0 (`game-9300`, Latest). Disk: repo folders 63.9 -> 51 GB (clean-up plus the update test's install), C: free 119 -> 131 GB. Proven Dan's way from GitHub: the published starter's launcher (launcher 1) installed 0.92.1, whose game put launcher 2 in place; launcher 2 then updated 0.92.1 -> 0.93.0 (1389 MiB) and started it ("Installed: 0.93.0 · launcher 2"; `local/round93/updtest/`). Build `Builds/ChastainRush/BUILD_INFO.txt` 2026-11-05 13:16.
 For Dan to check: the quarry after The Big One (and The Long One's run-up head); both planes on the stick and with LB / RB; Wings & Wheels (the road lap, the U-turn on a bike, the tube's way in); the planes' lap length (about 6 to 8 % quicker than the cars: lengthen more?).
 
-## QUEUED rounds
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 92
+## Previous delivery 2: Round 92
 **Reviewed: Dan updated to it and played 2026-11-05 (the quarry, the planes); his notes are Round 93.**
 **Round 92, THE LAUNCHER UPDATE FIXED, GLASS UNDER THE CREEKS, THE RACE FOR A PLANE OR A CAR (Dan, 2026-11-04 12:37, three photos of his screen, no reports; and the queued race of
 2026-11-02 01:40).** Round 91 is reviewed. Item 0, the one-heavy-job rule (at most 3 full Build Maps) and the end-of-round clean-up apply. Short results.
@@ -215,7 +251,7 @@ E DONE. Where the stage-5 mains pass under a creek, a pool at the creek's level 
 F DONE, timing NOT within 5 % after the two tuning attempts (reported, not tuned further). "Wings & Wheels" (race setup, Street or Air; `make_wings_route.py`, `make_wings_air_route.py`; `RaceController.Twin.cs`): one race, two laps over the same streets round Kennestone and the square. A car runs Cherokee, Tower Road, Church and Hansell (4.7 km), with THE TUBE: off Tower Road by worn tracks into the X_KEN mouth, down M7d with the express, out of the Root Street manhole (forgives CP4 to 8; the corridor now checks height, so the ground over the pipe does not count). A plane flies 10.1 km of rings the long way round: two low frames (under the hospital's skybridge, under the railroad), two slow rings (50 and 45 m/s, "TOO FAST" if over). Mixed fields (each racer its own lap; the opponents page offers cars and planes, All cars / All planes), records per kind plus a combined board, pipe express on in this race. Attempt 1 ran the southwest loop off the land (every plane into the edge wall); attempt 2 put it back and lengthened the northwest loop; the tree on Church Street's descent to C1 is cleared (track `wings_and_wheels_air.json`). Check (the exe, `f_final/`): human-like car 2:54 by the roads, 2:23 through the tube (2:10 in a cleaner run; 3 stalls this time near the turn-off and Cherokee), human-like plane 2:03 / 2:03, no crash, every low frame and slow ring taken. AI best laps, cars / planes: Easy 2:12-2:33 / 1:58-2:11; Normal 2:06-2:26 / 1:58-2:08; Hard 2:01-2:16 / 1:55-2:03. All 9 fields (all cars, all planes, mixed x 3 levels) finished; the AI took the tube on its own. Planes are 5 to 14 % quicker. To even it: shorten the car's lap or make the plane's longer (Dan decides). Pictures looked at: the turn-off (the orange shortcut on the minimap), inside the tube, the pop-out onto Root Street toward the line, the low frame under the skybridge. Not checked: HIGH MODE, ghosts and replays in this race (they use the shared race code).
 Full Build Maps used: 2 of 3. Build `Builds/ChastainRush/BUILD_INFO.txt` 2026-11-04 21:43. Disk: repo folders 83.3 -> 45 GB (clean-up plus this round's three update-test installs), C: free 106 -> 138 GB.
 
-## Previous delivery 2: Round 91
+## Previous delivery 3: Round 91
 **Reviewed: Dan drove the quarry 2026-11-04 (photos; his notes are Round 92).**
 **Round 91, THE QUARRY RACE READABLE AFTER ITS LANDINGS, SPLIT-SCREEN NOTES AT THE TOP, PLANE ROLLS AND LOOPS, THE UNDERGROUND ACROSS THE WHOLE MAP (Dan, 2026-11-02 01:40
 and 16:42; started 2026-11-03).** Rounds 88 to 90 driven only briefly by Dan. Item 0, the one-heavy-job rule and the end-of-round clean-up apply. Short results.
@@ -255,39 +291,6 @@ C DONE. Network stage 5 (`pipe_network.py --stage 5`): M7 South Main (hub, Town 
 Not done: where the new mains pass under a creek the pipe is plain concrete (the two ponds they cross are glass). Full Build Maps used: 2 of 3.
 Published: game 0.91.0 (`game-9100`, Latest) through the launcher. Clean-up: 44.9 -> 44.6 GB.
 For Dan to check: Viking Quarry after each landing (normal and HIGH); split-screen notes; rolls and loops in both planes (and HIGH near the ground); the new pipes from Town Center / KSU / Kennesaw / Kennestone / the Square / the airport, and both quarry launch pipes.
-
-## Previous delivery 3: Round 90
-**Driven briefly by Dan 2026-11-02 (one note: Round 91 item 0); not fully reviewed.**
-**Round 90, A VIKING QUARRY CAR RACE WITH HUGE JUMPS OVER THE LAKE (Dan, 2026-11-01 11:37: "The quarry - I wanted a car race with huge jumps over the lake").** Rounds 88
-and 89 are not yet driven by Dan. Item 0, the one-heavy-job rule (one job at a time, Below Normal, at most 3 full Build Maps) and the end-of-round clean-up apply. Short results.
-This settles the long-open quarry question (Laura Lake / Viking Quarry, queued since 2026-10-22). Two earlier tries at a Quarry Track were not built (Rounds 73 / 74,
-`make_quarry_track.py`, output in `local/round73/` and `round74/quarry_track_unbuilt/`): the haul road crossed the lane so racers skipped a loop, and the AI and the check
-driver got stuck (56 resets). Learn from them; design a new course, not that one.
-A. THE QUARRY RACE. A car circuit (race setup "Viking Quarry", forward; reverse only if it plays well) round and through Viking Quarry whose heart is HUGE JUMPS OVER THE
-   LAKE, on the course's line, not off to the side: at least three big lake crossings per lap (more if the quarry allows), each flying a real stretch of water (much
-   bigger than anything in the neighborhoods: think Kennesaw summit leap scale), plus the rim, the haul roads down the benches, the water's edge.
-   - Real physics only (standing rule): every launch off a ramp is a physics jump; size each ramp's angle and run-up so the speed the course gives there clears the water
-     with margin for every vehicle class allowed (say which), landings on sloped decks or banks that match the flight (no flat slams), run-outs long and clear.
-   - Ramps that belong in a quarry, all different (variety rule, not dirt piles): a rock ledge off a bench, a haul-road ramp of crushed stone, a conveyor gantry, a tipped
-     dump-truck bed, a stacked-boulder kicker, the Free Roam steel kickers if one fits the line (they stay in Free Roam as well).
-   - Coming up short means the lake: the car splashes, sinks partway (water rules, Woodstock Rush's), and is reset before the jump's checkpoint (Round 86 B), so a bad
-     run-up costs time, never the race. No free way round a lake jump (standing rule): the jump is the course.
-   - No crossings of the course with itself or with the haul roads at one level (the earlier tries' failure): a crossing is a bridge or is closed.
-   - Checkpoints line each run-up up straight; the crowd on the bleachers; signs only where the standing rules allow (tire tracks / LANDING boards).
-   - Built like the other courses: AI that takes every jump at the right speed (they slow for the run-up's window, never jump short as a rule), closures off the line,
-     records, ghosts, replays (the winner's flight from the TV camera), the map and loading inset, HIGH MODE bumpers (Round 86 / 87 rules: open at every jump's flight and
-     landing; out over a bumper resets you).
-   Say the lap's length, the number and size of the jumps (gap over water, air time, height) and the lap time.
-Check: the human-like driver races 3 laps against 3 AI in three vehicles (the bike, a car, the heaviest allowed), normal and HIGH: every jump cleared at race speed, no
-stuck spot, no reset except a forced short jump (it resets before the jump); a deliberately slow run-up at each jump lands in the lake and resets correctly; all AI finish.
-Pictures: each jump from the driver's seat at the lip and from the TV camera mid-flight. PUBLISH through the launcher.
-For Dan to check: the Viking Quarry race (normal and HIGH), the jumps, a short one into the lake.
-
-**Status (Claude, 2026-11-02): built (3 full Build Maps, the limit, then quick builds of the MountainRace step; exe 06:39), checked in the exe, published (0.90.0, `game-9000`), not yet driven by Dan.** Evidence `Data/screenshots/round90/`. No bug report newer than Round 87's.
-A DONE. "Viking Quarry" (`Tools/mapgen/make_quarry_route.py`, world `MapBuilder.QuarryRace.cs`), forward, 2 laps, 8.8 km a lap (AI 4:25 to 5:10). Why this shape: a car clears the lake only from the airport's plateau (320 m) down to the pit's benches (200 to 227 m), and only where they are within about 270 m of the rim; Free Roam's three quarry jumps already sit on those three lines, so the race flies them: The Big One (J3, crushed-stone kicker, about 245 m, 6.3 s, 100 m drop), The Corner (J1, the steel kicker, about 230 m, 6.5 s), The Long One (J2, the old conveyor's gantry, about 260 m, 6.3 s); kickers widened to 18 m, every flight unchanged. Each jump lands in the pit, so the lap climbs out three times without crossing itself: the low haul bench (down the north bank, round the west end at the water, up the south cliff under the kickers, through a cutting in the rim), the quarry's own haul road up the east wall, the high haul bench up the north wall; gravel 16 m wide, rock berms only over 10 m drops, race-only dividers on the pit floor, streams kept off the course (a creek crossed J1's run-up), the course clear of the airport's buildings. Short = the lake: an automatic reset (route `lake_reset_s`) to the run-up's head, no penalty (check: 3 of 3). Route extras: `miss_penalty_s` 30 (the legs pass close across the plateau), `ai_safe_jumps`, `ai_flat_stations` (the AI's stations were 300 m off after a jump: they braked at the lip), `high_half_m` 8 (HIGH's bumpers had stood 3.7 m out on the old 5 m service roads). Replays: Free Roam's TV cameras on the rims and landings. Vehicles: every ground vehicle but the stunt ones.
-Dan's 2026-11-02 note (the check car "perched on the edge of a grey stepped structure by a landing deck"): every stuck moment looked at (`stuck_spots_before.txt`, pictures `before_spot*` / `after_spot*`): 7 were wide or short landings caught on a 43 to 66 degree bank beside a deck, against its steel side skirt (the decks stood out over the bank on trestles); 6 were the rock berms ("the grey stepped structure", 1.6 m wide stones a car sat up on: at the haul road's start, the south-west corner, The Corner's run-up head); 1 the high bench's vertical cut face; 1 the conveyor gallery's end. Fixed: each landing is now an earth landing slope 90 m wide at its deck's angle, filled out to the deck's front (the deck lies on it), its banner posts not solid; berms only over 10 m drops, 60 m from landings and run-up heads, a thin wall; banks of about 30 degrees; the gallery and the start gantries' towers 17 / 18 m out. The player's resets per race (button + lake), before -> after: normal Needle 7 -> 1, Street Classic 9 (gave up) -> 4 (finished), Skyfin 9 (gave up) -> 6 (finished); HIGH Needle 3 -> 1, Street Classic 1 -> 2, Skyfin 5 -> 4; stuck moments 18 -> 1 (in the lake 70 m wide of The Big One, outside its reset area). (`race_check_before.txt`, `race_check_after.txt`.)
-NOT MET: "no reset": the human-like driver still comes up short on 1 to 7 jumps a race (lake resets), mostly its first try after a run-up's bend (from a run-up's head it makes every window). The AI finish every normal race (8 to 9 resets in 3 laps each); in HIGH MODE the AI were still on lap 3 when the player finished (6 to 7 minute laps) and are not proven to finish. (Tuning limit; Dan decides.)
-Published: game 0.90.0 (`game-9000`, Latest) through the launcher. Clean-up: 43.5 -> 42.6 GB. For Dan to check: the race (normal and HIGH), a wide landing at each jump, a short one into the lake, HIGH with AI.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
