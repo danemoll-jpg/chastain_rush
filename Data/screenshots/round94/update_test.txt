@@ -1,0 +1,19 @@
+﻿launcher at start: F5648B527344A36369661D04A805B80EE089E340E658B366C6588283DB2DA9A3
+after step 1: 0.92.1
+after step 2: 0.93.0
+launcher at 0.93.0: F5648B527344A36369661D04A805B80EE089E340E658B366C6588283DB2DA9A3
+after step 3: 0.94.0
+694694078 Checking for updatesâ€¦
+694694843 Updating to game 0.94.0â€¦
+694695390 Downloading 0%  (0 / 1391 MiB)
+694913218 Update installed. Starting the gameâ€¦
+695005437 Startup confirmation timed out. Close the game, then Retry or Restore previous. Diagnostics retained.
+
+Name                                     Length
+----                                     ------
+exploration-map-v1.json                     100
+noonday-trail-directions-swapped-r64.txt    147
+settings.json                              1336
+settings.json.bak                          1336
+
+
