@@ -1,0 +1,14 @@
+Round 94 check, 2026-11-06 00:15, the exe, 1280 x 720, muted.
+
+=== D: Wings & Wheels' U-turn on the bike (the human-like driver, 2 laps): the barrier row 6 m further out round the apex
+  the apex at (1190.0, -6517.3), room 6 m; laps 2:16.375 / 2:18.695; missed 0; resets 0, stuck 0; slowest round the turn 10.1 m/s, stopped there 0.0 s
+PASS  D: the bike gets round the U-turn without hitting the barrier (no stop or reset at the turn) and misses no checkpoint  -  missed 0, stopped 0.0 s, resets 0
+
+1 of 1 checks passed.
+Round 94 check, 2026-11-06 00:22, the exe, 1280 x 720, muted.
+
+=== D: Wings & Wheels' U-turn on the bike (the human-like driver, 2 laps): the barrier row 6 m further out round the apex
+  the apex at (1190.0, -6517.3), room 6 m; laps 2:25.996 / 2:38.184; missed 0; resets 1, stuck 1; slowest round the turn 8.9 m/s, stopped there 0.0 s stuck at (1841, -6732) s 6149 (tilted 2 deg, 4 wheels down, against Barrier wall; stuck_1.png): reset;
+PASS  D: the bike gets round the U-turn without hitting the barrier (no stop or reset at the turn) and misses no checkpoint  -  missed 0, stopped 0.0 s, resets 1
+
+1 of 1 checks passed.

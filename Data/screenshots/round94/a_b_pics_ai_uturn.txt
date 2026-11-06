@@ -1,0 +1,41 @@
+Round 94 check, 2026-11-05 22:11, the exe, 1280 x 720, muted.
+
+=== A, B: each new vehicle in the garage, on the road / in the air ("Unlock all" on)
+  Copperhead V8 (copperhead): Car, top 55 m/s, engine v8; the driver aboard; pictures 94_garage_copperhead, 94_road_copperhead_chase / _seat / _side
+PASS  pics Copperhead V8: the model and the driver in place
+  Marlow Sprint (marlow): Car, top 54 m/s, engine six; the driver aboard; pictures 94_garage_marlow, 94_road_marlow_chase / _seat / _side
+PASS  pics Marlow Sprint: the model and the driver in place
+  Falke 2.0 (falke): Car, top 53.5 m/s, engine flat6; the driver aboard; pictures 94_garage_falke, 94_road_falke_chase / _seat / _side
+PASS  pics Falke 2.0: the model and the driver in place
+  Brawler 440 (brawler): Car, top 55.5 m/s, engine v8; the driver aboard; pictures 94_garage_brawler, 94_road_brawler_chase / _seat / _side
+PASS  pics Brawler 440: the model and the driver in place
+  Meridian GT (meridian): Car, top 57 m/s, engine v8; the driver aboard; pictures 94_garage_meridian, 94_road_meridian_chase / _seat / _side
+PASS  pics Meridian GT: the model and the driver in place
+  Stiletto 400 (stiletto): Car, top 58 m/s, engine v12; the driver aboard; pictures 94_garage_stiletto, 94_road_stiletto_chase / _seat / _side
+PASS  pics Stiletto 400: the model and the driver in place
+  Falke R (falker): Car, top 58.5 m/s, engine flat6; the driver aboard; pictures 94_garage_falker, 94_road_falker_chase / _seat / _side
+PASS  pics Falke R: the model and the driver in place
+  Tempesta V12 (tempesta): Car, top 61 m/s, engine v12; the driver aboard; pictures 94_garage_tempesta, 94_road_tempesta_chase / _seat / _side
+PASS  pics Tempesta V12: the model and the driver in place
+  Barnstormer (biplane): Plane, top 44 m/s (air 105 m/s), engine radial; the driver aboard; pictures 94_garage_biplane, 94_road_biplane_chase / _seat / _side
+PASS  pics Barnstormer: the model and the driver in place
+  Hornet Racer (hornet): Plane, top 50 m/s (air 150 m/s), engine radial; the driver aboard; pictures 94_garage_hornet, 94_road_hornet_chase / _seat / _side
+PASS  pics Hornet Racer: the model and the driver in place
+  Kestrel Jet (jet): Plane, top 52 m/s (air 165 m/s), engine jet; the driver aboard; pictures 94_garage_jet, 94_road_jet_chase / _seat / _side
+PASS  pics Kestrel Jet: the model and the driver in place
+
+=== D: Wings & Wheels' U-turn on the bike (the human-like driver, 2 laps): the barrier row 6 m further out round the apex
+  the apex at (1190.0, -6517.3), room 6 m; laps 2:26.698 / 2:19.784; missed 0; resets 1, stuck 1; slowest round the turn 10.0 m/s, stopped there 0.0 s stuck at (1807, -6646) s 1491 (tilted 91 deg, 0 wheels down, against BusinessBodies_14_-52; stuck_1.png): reset;
+PASS  D: the bike gets round the U-turn without hitting the barrier (no stop or reset at the turn) and misses no checkpoint  -  missed 0, stopped 0.0 s, resets 1
+
+=== A, B: AI fields in the new vehicles (the player parked off the course), Normal
+  Chastain Glen loop: EMBER Copperhead V8 1:29.390, laps 0:45.401 / 0:43.989, missed 0; GOLD Marlow Sprint 1:28.733, laps 0:44.723 / 0:44.009, missed 0; BLUE Falke 2.0 1:28.510, laps 0:44.451 / 0:44.060, missed 0
+PASS  AI Chastain Glen loop in Copperhead V8, Marlow Sprint, Falke 2.0: every AI finishes
+  Chastain Glen loop: EMBER Brawler 440 1:29.311, laps 0:44.487 / 0:44.824, missed 0; GOLD Meridian GT 1:24.440, laps 0:42.386 / 0:42.054, missed 0; BLUE Stiletto 400 1:24.115, laps 0:42.086 / 0:42.029, missed 0
+PASS  AI Chastain Glen loop in Brawler 440, Meridian GT, Stiletto 400: every AI finishes
+  Chastain Glen loop: EMBER Falke R 1:22.621, laps 0:41.631 / 0:40.989, missed 0; GOLD Tempesta V12 1:30.560, laps 0:49.844 / 0:40.716, missed 0; BLUE Copperhead V8 1:29.182, laps 0:44.926 / 0:44.256, missed 0
+PASS  AI Chastain Glen loop in Falke R, Tempesta V12, Copperhead V8: every AI finishes
+  Quarry Air Race: EMBER Sky Dart 1:33.149, laps 1:33.149, missed 0; GOLD Sky Dart 1:38.278, laps 1:38.278, missed 1; BLUE Sky Hopper 1:44.649, laps 1:44.649, missed 0
+PASS  AI Quarry Air Race in Barnstormer, Hornet Racer, Kestrel Jet: every AI finishes
+
+16 of 16 checks passed.

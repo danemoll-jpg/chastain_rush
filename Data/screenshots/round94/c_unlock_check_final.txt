@@ -1,0 +1,39 @@
+Round 94 check, 2026-11-05 22:38, the exe, 1280 x 720, muted.
+
+=== C: the unlock table on a copy of Dan's save (goose-eggs-v1.json in the check's folder)
+  the save: C:\Users\danmo\chastain_rush\local\round94\check3\goose-eggs-v1.json; eggs found 21, tiers 10
+  the table: 10 eggs: Copperhead V8; 25 eggs: Barnstormer; 60 eggs: Marlow Sprint; 125 eggs: Hornet Racer; 190 eggs: Kestrel Jet; 250 eggs: Tempesta V12; campaign: Falke 2.0, Brawler 440, Meridian GT, Stiletto 400, Falke R
+  locked now: Marlow Sprint, Falke 2.0, Brawler 440, Meridian GT, Stiletto 400, Falke R, Tempesta V12, Barnstormer, Hornet Racer, Kestrel Jet
+PASS  C: every vehicle from before Round 94 stays unlocked
+PASS  C: the save's eggs open exactly their tiers' vehicles (Dan's 19: the Copperhead V8 open, the rest locked)  -  marlow, falke, brawler, meridian, stiletto, falker, tempesta, biplane, hornet, jet
+PASS  C: HIGH MODE has every vehicle unlocked
+  the banner in Free Roam: "UNLOCKED:  COPPERHEAD V8 / Your goose eggs earned it: choose it in the garage"; announced Copperhead V8
+PASS  C: the vehicle tier 10 gave is announced once in Free Roam  -  UNLOCKED:  COPPERHEAD V8 / Your goose eggs earned it: choose it in the garage
+  the garage: locked ones shown Marlow Sprint, Falke 2.0, Brawler 440, Meridian GT, Stiletto 400, Falke R, Tempesta V12, Barnstormer, Hornet Racer, Kestrel Jet; new ones put on Copperhead V8
+PASS  C: the garage shows every locked vehicle (padlock, how to unlock) and never puts one on  -  seen 10 of 10, driven a locked one False
+  eggs taken to 25: the banner "TIER 2 REACHED:  25 EGGS / UNLOCKED:  Barnstormer   ·   goose eggs 25 / 250"
+PASS  C: tier 25's banner names the Barnstormer and it unlocks  -  TIER 2 REACHED:  25 EGGS / UNLOCKED:  Barnstormer   ·   goose eggs 25 / 250
+
+=== A, B: each new vehicle in the garage, on the road / in the air ("Unlock all" on)
+  Brawler 440 (brawler): Car, top 55.5 m/s, engine v8; the driver aboard; pictures 94_garage_brawler, 94_road_brawler_chase / _seat / _side
+PASS  pics Brawler 440: the model and the driver in place
+  Tempesta V12 (tempesta): Car, top 61 m/s, engine v12; the driver aboard; pictures 94_garage_tempesta, 94_road_tempesta_chase / _seat / _side
+PASS  pics Tempesta V12: the model and the driver in place
+  Falke 2.0 (falke): Car, top 53.5 m/s, engine flat6; the driver aboard; pictures 94_garage_falke, 94_road_falke_chase / _seat / _side
+PASS  pics Falke 2.0: the model and the driver in place
+  Marlow Sprint (marlow): Car, top 54 m/s, engine six; the driver aboard; pictures 94_garage_marlow, 94_road_marlow_chase / _seat / _side
+PASS  pics Marlow Sprint: the model and the driver in place
+  Kestrel Jet (jet): Plane, top 52 m/s (air 165 m/s), engine jet; the driver aboard; pictures 94_garage_jet, 94_road_jet_chase / _seat / _side
+PASS  pics Kestrel Jet: the model and the driver in place
+
+=== A, B: AI fields in the new vehicles (the player parked off the course), Normal
+  Chastain Glen loop: EMBER Copperhead V8 1:32.614, laps 0:46.437 / 0:46.178, missed 0; GOLD Marlow Sprint 1:28.442, laps 0:44.312 / 0:44.130, missed 0; BLUE Falke 2.0 1:28.213, laps 0:44.061 / 0:44.152, missed 0
+PASS  AI Chastain Glen loop in Copperhead V8, Marlow Sprint, Falke 2.0: they race those vehicles and every AI finishes  -  raced Copperhead V8, Marlow Sprint, Falke 2.0; 
+  Chastain Glen loop: EMBER Brawler 440 1:29.635, laps 0:44.732 / 0:44.902, missed 0; GOLD Meridian GT 1:27.235, laps 0:42.321 / 0:44.914, missed 0; BLUE Stiletto 400 1:24.041, laps 0:42.014 / 0:42.027, missed 0
+PASS  AI Chastain Glen loop in Brawler 440, Meridian GT, Stiletto 400: they race those vehicles and every AI finishes  -  raced Brawler 440, Meridian GT, Stiletto 400; 
+  Chastain Glen loop: EMBER Falke R 1:23.781, laps 0:42.782 / 0:40.999, missed 0; GOLD Tempesta V12 1:28.952, laps 0:47.762 / 0:41.189, missed 0; BLUE Copperhead V8 1:30.916, laps 0:45.378 / 0:45.538, missed 0
+PASS  AI Chastain Glen loop in Falke R, Tempesta V12, Copperhead V8: they race those vehicles and every AI finishes  -  raced Falke R, Tempesta V12, Copperhead V8; 
+  Quarry Air Race: EMBER Barnstormer 1:51.887, laps 1:51.887, missed 0; GOLD Hornet Racer 1:28.401, laps 1:28.401, missed 0; BLUE Kestrel Jet 1:25.901, laps 1:25.901, missed 0
+PASS  AI Quarry Air Race in Barnstormer, Hornet Racer, Kestrel Jet: they race those vehicles and every AI finishes  -  raced Barnstormer, Hornet Racer, Kestrel Jet; 
+
+15 of 15 checks passed.

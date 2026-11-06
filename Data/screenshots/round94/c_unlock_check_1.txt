@@ -1,0 +1,17 @@
+Round 94 check, 2026-11-05 22:08, the exe, 1280 x 720, muted.
+
+=== C: the unlock table on a copy of Dan's save (goose-eggs-v1.json in the check's folder)
+  the save: C:\Users\danmo\chastain_rush\local\round94\c_unlock\goose-eggs-v1.json; eggs found 21, tiers 10
+  the table: 10 eggs: Copperhead V8; 25 eggs: Barnstormer; 60 eggs: Marlow Sprint; 125 eggs: Hornet Racer; 190 eggs: Kestrel Jet; 250 eggs: Tempesta V12; campaign: Falke 2.0, Brawler 440, Meridian GT, Stiletto 400, Falke R
+  locked now: Marlow Sprint, Falke 2.0, Brawler 440, Meridian GT, Stiletto 400, Falke R, Tempesta V12, Barnstormer, Hornet Racer, Kestrel Jet
+PASS  C: every vehicle from before Round 94 stays unlocked
+PASS  C: the save's eggs open exactly their tiers' vehicles (Dan's 19: the Copperhead V8 open, the rest locked)  -  marlow, falke, brawler, meridian, stiletto, falker, tempesta, biplane, hornet, jet
+PASS  C: HIGH MODE has every vehicle unlocked
+  the banner in Free Roam: "UNLOCKED:  COPPERHEAD V8 / Your goose eggs earned it: choose it in the garage"; announced Copperhead V8
+PASS  C: the vehicle tier 10 gave is announced once in Free Roam  -  UNLOCKED:  COPPERHEAD V8 / Your goose eggs earned it: choose it in the garage
+  the garage: locked ones shown ; new ones put on Copperhead V8
+FAIL  C: the garage shows every locked vehicle (padlock, how to unlock) and never puts one on  -  seen 0 of 10, driven a locked one False
+  eggs taken to 25: the banner "TIER 2 REACHED:  25 EGGS / UNLOCKED:  Barnstormer   ·   goose eggs 25 / 250"
+PASS  C: tier 25's banner names the Barnstormer and it unlocks  -  TIER 2 REACHED:  25 EGGS / UNLOCKED:  Barnstormer   ·   goose eggs 25 / 250
+
+5 of 6 checks passed.

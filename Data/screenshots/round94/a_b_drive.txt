@@ -1,0 +1,74 @@
+Round 94 check, 2026-11-05 22:45, the exe, 1280 x 720, muted.
+
+=== A: each new car a lap of chastain_glen_loop.json and addison_heights.json by the human-like driver (solo)
+  Copperhead V8 on Chastain Glen loop: 0:47.194, missed 0, resets 0, stuck 0, top 40 m/s
+PASS  A Copperhead V8: the human-like driver finishes a lap of Chastain Glen loop  -  0:47.194, resets 0, missed 0
+  Copperhead V8 on Addison Heights: 1:22.824, missed 0, resets 1, stuck 1, top 48 m/s stuck at (3019, 395) s 908 (tilted 12 deg, 4 wheels down, against trunk; stuck_1.png): reset;
+PASS  A Copperhead V8: the human-like driver finishes a lap of Addison Heights  -  1:22.824, resets 1, missed 0
+  Marlow Sprint on Chastain Glen loop: 0:55.448, missed 0, resets 2, stuck 2, top 41 m/s stuck at (2953, 891) s 0 (tilted 15 deg, 2 wheels down; stuck_2.png): reset; stuck at (2818, 1129) s 747 (tilted 2 deg, 4 wheels down, against House 1960; stuck_3.png): reset;
+PASS  A Marlow Sprint: the human-like driver finishes a lap of Chastain Glen loop  -  0:55.448, resets 2, missed 0
+  Marlow Sprint on Addison Heights: 1:41.607, missed 0, resets 1, stuck 1, top 42 m/s stuck at (2901, 427) s 1040 (tilted 19 deg, 4 wheels down, against trunk; stuck_4.png): reset;
+PASS  A Marlow Sprint: the human-like driver finishes a lap of Addison Heights  -  1:41.607, resets 1, missed 0
+  Falke 2.0 on Chastain Glen loop: 0:50.341, missed 0, resets 0, stuck 0, top 37 m/s
+PASS  A Falke 2.0: the human-like driver finishes a lap of Chastain Glen loop  -  0:50.341, resets 0, missed 0
+  Falke 2.0 on Addison Heights: 1:31.290, missed 0, resets 1, stuck 1, top 44 m/s stuck at (3039, 551) s 1771 (tilted 7 deg, 4 wheels down, against House 1211; stuck_5.png): reset;
+PASS  A Falke 2.0: the human-like driver finishes a lap of Addison Heights  -  1:31.290, resets 1, missed 0
+  Brawler 440 on Chastain Glen loop: 0:43.994, missed 0, resets 0, stuck 0, top 42 m/s
+PASS  A Brawler 440: the human-like driver finishes a lap of Chastain Glen loop  -  0:43.994, resets 0, missed 0
+  Brawler 440 on Addison Heights: 1:23.144, missed 0, resets 1, stuck 1, top 48 m/s stuck at (2635, 444) s 1315 (tilted 30 deg, 2 wheels down, against trunk; stuck_6.png): reset;
+PASS  A Brawler 440: the human-like driver finishes a lap of Addison Heights  -  1:23.144, resets 1, missed 0
+  Meridian GT on Chastain Glen loop: 0:46.235, missed 0, resets 0, stuck 0, top 41 m/s
+PASS  A Meridian GT: the human-like driver finishes a lap of Chastain Glen loop  -  0:46.235, resets 0, missed 0
+  Meridian GT on Addison Heights: 1:33.492, missed 0, resets 1, stuck 1, top 49 m/s stuck at (2896, 405) s 1045 (tilted 19 deg, 4 wheels down; stuck_7.png): reset;
+PASS  A Meridian GT: the human-like driver finishes a lap of Addison Heights  -  1:33.492, resets 1, missed 0
+  Stiletto 400 on Chastain Glen loop: 0:46.118, missed 0, resets 0, stuck 0, top 41 m/s
+PASS  A Stiletto 400: the human-like driver finishes a lap of Chastain Glen loop  -  0:46.118, resets 0, missed 0
+  Stiletto 400 on Addison Heights: 1:20.591, missed 0, resets 0, stuck 0, top 44 m/s
+PASS  A Stiletto 400: the human-like driver finishes a lap of Addison Heights  -  1:20.591, resets 0, missed 0
+  Falke R on Chastain Glen loop: 0:45.339, missed 0, resets 1, stuck 1, top 41 m/s stuck at (2951, 846) s 0 (tilted 10 deg, 4 wheels down, against House 1071; stuck_8.png): reset;
+PASS  A Falke R: the human-like driver finishes a lap of Chastain Glen loop  -  0:45.339, resets 1, missed 0
+  Falke R on Addison Heights: 1:34.408, missed 1, resets 0, stuck 0, top 45 m/s
+PASS  A Falke R: the human-like driver finishes a lap of Addison Heights  -  1:34.408, resets 0, missed 1
+  Tempesta V12 on Chastain Glen loop: 0:47.059, missed 0, resets 0, stuck 0, top 42 m/s
+PASS  A Tempesta V12: the human-like driver finishes a lap of Chastain Glen loop  -  0:47.059, resets 0, missed 0
+  Tempesta V12 on Addison Heights: 1:57.632, missed 0, resets 4, stuck 4, top 47 m/s stuck at (3260, 290) s 180 (tilted 27 deg, 4 wheels down, against trunk; stuck_9.png): reset; stuck at (3020, 396) s 909 (tilted 28 deg, 2 wheels down, against trunk; stuck_10.png): reset; stuck at (2875, 381) s 1064 (tilted 17 deg, 4 wheels down, against trunk; stuck_11.png): reset; stuck at (2864, 422) s 1078 (tilted 24 deg, 3 wheels down, against trunk; stuck_12.png): reset;
+FAIL  A Tempesta V12: the human-like driver finishes a lap of Addison Heights  -  1:57.632, resets 4, missed 0
+
+=== B: each new plane a lap of quarry_air_race.json and air_tour.json by the human-like pilot (solo)
+  Barnstormer on Quarry Air Race: 2:18.398, missed 0, crashes 0; crashes 0;
+PASS  B Barnstormer: the human-like pilot finishes a lap of Quarry Air Race  -  2:18.398, missed 0
+  Barnstormer on Air Tour: 5:53.181, missed 0, crashes 1; crashes 1;
+PASS  B Barnstormer: the human-like pilot finishes a lap of Air Tour  -  5:53.181, missed 0
+  Hornet Racer on Quarry Air Race: 1:26.086, missed 0, crashes 0; crashes 0;
+PASS  B Hornet Racer: the human-like pilot finishes a lap of Quarry Air Race  -  1:26.086, missed 0
+  Hornet Racer on Air Tour: 3:55.514, missed 1, crashes 0; crashes 0;
+PASS  B Hornet Racer: the human-like pilot finishes a lap of Air Tour  -  3:55.514, missed 1
+  Kestrel Jet on Quarry Air Race: 1:22.159, missed 0, crashes 0; crashes 0;
+PASS  B Kestrel Jet: the human-like pilot finishes a lap of Quarry Air Race  -  1:22.159, missed 0
+  Kestrel Jet on Air Tour: 3:40.558, missed 1, crashes 0; crashes 0;
+PASS  B Kestrel Jet: the human-like pilot finishes a lap of Air Tour  -  3:40.558, missed 1
+  lap times:
+    Chastain Glen loop	Copperhead V8	0:47.194	top 40 m/s
+    Addison Heights	Copperhead V8	1:22.824	top 48 m/s
+    Chastain Glen loop	Marlow Sprint	0:55.448	top 41 m/s
+    Addison Heights	Marlow Sprint	1:41.607	top 42 m/s
+    Chastain Glen loop	Falke 2.0	0:50.341	top 37 m/s
+    Addison Heights	Falke 2.0	1:31.290	top 44 m/s
+    Chastain Glen loop	Brawler 440	0:43.994	top 42 m/s
+    Addison Heights	Brawler 440	1:23.144	top 48 m/s
+    Chastain Glen loop	Meridian GT	0:46.235	top 41 m/s
+    Addison Heights	Meridian GT	1:33.492	top 49 m/s
+    Chastain Glen loop	Stiletto 400	0:46.118	top 41 m/s
+    Addison Heights	Stiletto 400	1:20.591	top 44 m/s
+    Chastain Glen loop	Falke R	0:45.339	top 41 m/s
+    Addison Heights	Falke R	1:34.408	top 45 m/s
+    Chastain Glen loop	Tempesta V12	0:47.059	top 42 m/s
+    Addison Heights	Tempesta V12	1:57.632	top 47 m/s
+    Quarry Air Race	Barnstormer	2:18.398
+    Air Tour	Barnstormer	5:53.181
+    Quarry Air Race	Hornet Racer	1:26.086
+    Air Tour	Hornet Racer	3:55.514
+    Quarry Air Race	Kestrel Jet	1:22.159
+    Air Tour	Kestrel Jet	3:40.558
+
+21 of 22 checks passed.

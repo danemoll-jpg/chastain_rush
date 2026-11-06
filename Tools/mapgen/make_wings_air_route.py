@@ -56,8 +56,8 @@ CTRL = [
     ((1842.0, -7560.0), ("CH", "Up Cherokee Street", "ring", 22, ("agl", 28))),
     # Round 93 (C3): out east of Cherokee Street and back to Kennestone (a longer way in place of the slow rings)
     ((2050.0, -7380.0), None),
-    ((2350.0, -7170.0), ("EK", "East of Kennestone", "ring", 26, ("agl", 45))),
-    ((2260.0, -6870.0), None),
+    ((2600.0, -7200.0), ("EK", "East of Kennestone", "ring", 26, ("agl", 45))),   # Round 94 (D): further east (was 2350, -7170)
+    ((2420.0, -6860.0), None),
     ((1885.0, -6800.0), ("KE", "Kennestone east", "ring", 24, ("agl", 40))),
     ((1840.0, -6420.0), None),
     ((1650.0, -6230.0), None),
@@ -90,8 +90,8 @@ CTRL = [
     ((1957.5, -9013.4), ("P1", "Onto the parkway", "ring", 22, ("agl", 14))),
     ((1841.6, -9044.5), ("U3", "Under the railroad", "frame", (10, 3.0), ("agl", 5.4))),
     ((1680.0, -9080.0), None),
-    ((1430.0, -9050.0), None),
-    ((1330.0, -8660.0), ("WS", "West of the square", "ring", 26, ("agl", 45))),
+    ((1530.0, -9000.0), None),
+    ((1490.0, -8640.0), ("WS", "West of the square", "ring", 26, ("agl", 45))),   # (Round 94: x 1330 put the line on the south piece's west edge wall, x 1327.7)
     ((1560.0, -8360.0), None),
     ((1700.0, -8260.0), None),
     ((1790.0, -8180.0), None),
