@@ -24,7 +24,9 @@ namespace ChastainRush
                     var p = route.PointAt(route.GateS + t.s + u, out var f); var right = Vector3.Cross(Vector3.up, f);
                     // Round 94 (D, Dan: "the U-turn ... widened or eased so a bike at race speed gets round without hitting the barrier"): the row stands
                     // the turn's room further out round the apex (full there, easing to none at the row's ends), so a bike running wide has run-off
-                    float ease = Mathf.Cos(Mathf.Clamp(u / t.reach, -1f, 1f) * Mathf.PI * .5f); ease *= ease;
+                    // (attempt 2: on the way out of the turn the full room holds for half the reach, then eases: the bike ran wide on the exit)
+                    float k = u <= 0f ? u / t.reach : Mathf.Max(0f, u - t.reach * .5f) / (t.reach * .5f);
+                    float ease = Mathf.Cos(Mathf.Clamp(k, -1f, 1f) * Mathf.PI * .5f); ease *= ease;
                     var q = p + right * t.side * (Edge(p) + t.room * ease);
                     if (last.HasValue && new Vector2(q.x - last.Value.x, q.z - last.Value.z).magnitude < Block) continue;
                     var dir = last.HasValue ? new Vector3(q.x - last.Value.x, 0f, q.z - last.Value.z).normalized : new Vector3(f.x, 0f, f.z).normalized;
