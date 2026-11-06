@@ -22,7 +22,10 @@ namespace ChastainRush
                 for (float u = -t.reach; u <= t.reach; u += .5f)
                 {
                     var p = route.PointAt(route.GateS + t.s + u, out var f); var right = Vector3.Cross(Vector3.up, f);
-                    var q = p + right * t.side * Edge(p);
+                    // Round 94 (D, Dan: "the U-turn ... widened or eased so a bike at race speed gets round without hitting the barrier"): the row stands
+                    // the turn's room further out round the apex (full there, easing to none at the row's ends), so a bike running wide has run-off
+                    float ease = Mathf.Cos(Mathf.Clamp(u / t.reach, -1f, 1f) * Mathf.PI * .5f); ease *= ease;
+                    var q = p + right * t.side * (Edge(p) + t.room * ease);
                     if (last.HasValue && new Vector2(q.x - last.Value.x, q.z - last.Value.z).magnitude < Block) continue;
                     var dir = last.HasValue ? new Vector3(q.x - last.Value.x, 0f, q.z - last.Value.z).normalized : new Vector3(f.x, 0f, f.z).normalized;
                     last = q;
@@ -43,7 +46,7 @@ namespace ChastainRush
                 // the board: beyond the apex on the outside, facing the drivers coming up to the turn
                 {
                     var p = route.PointAt(route.GateS + t.s, out var f); var right = Vector3.Cross(Vector3.up, f);
-                    var at = p + right * t.side * (Edge(p) + 4f); at.y = RaceRoute.Surface(at.x, at.z).y;
+                    var at = p + right * t.side * (Edge(p) + t.room + 4f); at.y = RaceRoute.Surface(at.x, at.z).y;
                     var from = route.PointAt(route.GateS + t.s - 70f, out _); var face = new Vector3(from.x - at.x, 0f, from.z - at.z).normalized;
                     var tex = Resources.Load<Texture2D>(t.side > 0f ? "RaceSigns/UTurnLeft" : "RaceSigns/UTurnRight");
                     var board = new GameObject("U-turn board").transform; board.SetParent(root, false);

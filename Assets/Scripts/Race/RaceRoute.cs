@@ -59,7 +59,7 @@ namespace ChastainRush
     }
 
     [Serializable] public class RoutePieceJson { public long osm_id; public string name; public float length_m; public bool reverse; }
-    [Serializable] public class RouteUTurnJson { public float[] pos; public float reach; }   // Round 93 (C2): a U-turn's apex and reach (Race/RaceUTurns.cs)
+    [Serializable] public class RouteUTurnJson { public float[] pos; public float reach, room; }   // Round 94 (D): room = extra run-off (m) round the apex   // Round 93 (C2): a U-turn's apex and reach (Race/RaceUTurns.cs)
     [Serializable] public class RouteJunctionJson { public float s; public string[] roads; public float[] pos; }
     [Serializable]
     public class RouteJson

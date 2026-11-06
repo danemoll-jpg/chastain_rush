@@ -316,7 +316,7 @@ for c in closures:
 # Round 93 (C2, Dan: "since there is a uturn lets make it more obvious"): the U-turn at Tower Road's west end (its apex: the lap's westmost point
 # there), for the race layer's barrier row along its outside, its U-turn board and the minimap (Race/RaceUTurns.cs)
 apex = min((q for q in lap if math.dist(q, (1195.0, -6515.0)) < 60.0), key=lambda q: q[0])
-u_turns = [{"pos": [round(apex[0], 1), round(apex[1], 1)], "reach": 30.0}]
+u_turns = [{"pos": [round(apex[0], 1), round(apex[1], 1)], "reach": 30.0, "room": 6.0}]   # Round 94 (D): 6 m more run-off round the apex (the bike ran wide into the row)
 print(f"the U-turn's apex at ({apex[0]:.1f}, {apex[1]:.1f})")
 
 out = dict(SETTINGS)

@@ -49,7 +49,9 @@ keep = np.zeros(len(p), bool)
 for j in load("Data/tracks/quarry_jumps.json")["jumps"]:
     o, d = np.array(j["origin"]), np.array(j["dir"]); nl = np.array([-d[1], d[0]])
     al = (p - o) @ d; lat = (p - o) @ nl
-    keep |= (np.abs(lat) < 25.0) & (al > -10.0) & (al < j["land_s"][-1] + 40.0)
+    # Round 94 (D, the hop at The Long One's run-up head, every run): the kept stretch starts 20 m into the run-up (was 10 m before it), so the
+    # join of the course and the run-up is smoothed with the lap
+    keep |= (np.abs(lat) < 25.0) & (al > 20.0) & (al < j["land_s"][-1] + 40.0)
 lines.append({"id": "Viking Quarry", "closed": True, "points": [round(float(v), 2) for v in p.ravel()], "speeds": speeds(p, 45.0), "keep": ranges(keep),
               # crest 0.45 g at up to 45 m/s (Round 93 check: the bikes hopped 0.5 to 0.7 s at 36 to 42 m/s where the climbs out of J1's and J2's
               # catch slopes eased off at 0.8 g / 40 m/s: a sprung vehicle leaves before the bare limit)
@@ -79,9 +81,9 @@ sc = [s for s in r["official_shortcuts"] if s["id"] == "f_tube"][0]
 q = np.array(sc["path"]).reshape(-1, 2); qc = np.concatenate([[0], np.cumsum(np.linalg.norm(np.diff(q, axis=0), axis=1))])
 mouth = np.array([e for e in load("Data/pipes/network.json")["exits"] if e["id"] == "X_KEN"][0]["a"])
 k = int(np.argmin(np.hypot(q[:, 0] - mouth[0], q[:, 1] - mouth[1]) + 1e6 * (qc > 400)))
-q = q[: np.searchsorted(qc, qc[k] - 12.0)]; p = resample(q, 2.0)
+q = q[: np.searchsorted(qc, qc[k] - 3.0)]; p = resample(q, 2.0)   # Round 94 (D): to 3 m short of the mouth (was 12: the 0.66 s hop at the mouth's step)
 lines.append({"id": "Wings & Wheels: the tube's way in", "closed": False, "points": [round(float(v), 2) for v in p.ravel()], "speeds": speeds(p, 30.0), "keep": [],
               "half": 3.5, "blend": 4.0, "sigma": 4.0, "crest_g": 0.55, "sag_g": 2.5, "max_change": 1.2})
-print(f"the tube's way in: {len(p)} points, to {qc[k] - 12.0:.0f} m of {qc[k]:.0f} m (the mouth)")
+print(f"the tube's way in: {len(p)} points, to {qc[k] - 3.0:.0f} m of {qc[k]:.0f} m (the mouth)")
 json.dump({"source":"Tools/mapgen/make_round93_smooth.py (Round 93 A, C1)", "lines": lines}, open(OUT, "w", encoding="utf-8"))
 print("wrote", OUT)
